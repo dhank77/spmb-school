@@ -70,10 +70,10 @@
                             <p class="text-label-sm text-on-surface-variant">Contact Admission Support</p>
                         </div>
                     </div>
-                    <button class="w-full border border-primary text-primary py-2.5 rounded-lg font-label-md hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center justify-center gap-2">
+                    <a href="https://wa.me/62882019679350" target="_blank" class="w-full border border-primary text-primary py-2.5 rounded-lg font-label-md hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center justify-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">chat_bubble</span>
-                        Live Chat
-                    </button>
+                        Whatsapp Kami
+                    </a>
                 </div>
             </div>
         </aside>
@@ -81,8 +81,10 @@
         <!-- Right Column: Registration Form -->
         <section class="lg:col-span-8">
             <div class="bg-white p-8 md:p-12 rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] border border-slate-100">
-                <form class="space-y-8" wire:submit.prevent="nextStep">
+                <form class="space-y-8" wire:submit.prevent="{{ $currentStep === 3 ? 'submitForm' : 'nextStep' }}">
+                    
                     @if ($currentStep === 1)
+                        <!-- STEP 1: Personal Data -->
                         <div class="border-b border-slate-100 pb-4 mb-6">
                             <h2 class="font-headline-md text-headline-md text-on-surface">Personal Identity</h2>
                             <p class="font-body-md text-body-md text-on-surface-variant">Ensure all information matches your official government ID.</p>
@@ -169,35 +171,116 @@
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
-                        <div class="pt-8 mt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <button type="button" class="text-on-surface-variant font-label-md flex items-center gap-2 hover:text-primary transition-colors order-2 sm:order-1">
-                                <span class="material-symbols-outlined">delete</span>
-                                Clear Form
-                            </button>
-                            <div class="flex gap-4 w-full sm:w-auto order-1 sm:order-2">
-                                <button type="submit" class="flex-1 sm:flex-none bg-primary text-on-primary px-8 py-3 rounded-lg font-label-md hover:shadow-lg hover:shadow-primary/20 transition-all flex items-center justify-center gap-2 w-full">
-                                    Next Step
-                                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-                                </button>
+                    @elseif ($currentStep === 2)
+                        <!-- STEP 2: Academic Records -->
+                        <div class="border-b border-slate-100 pb-4 mb-6">
+                            <h2 class="font-headline-md text-headline-md text-on-surface">Academic Records</h2>
+                            <p class="font-body-md text-body-md text-on-surface-variant">Please provide details about your previous educational institution.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Previous School -->
+                            <div class="md:col-span-2">
+                                <label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="previous_school">Previous School Name (Asal Sekolah)</label>
+                                <input wire:model="previous_school" class="w-full px-4 py-3 border @error('previous_school') border-red-500 @else border-slate-200 @enderror rounded-lg focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-300" id="previous_school" placeholder="e.g. SMP Negeri 1 Jakarta" type="text" />
+                            </div>
+
+                            <!-- Graduation Year -->
+                            <div class="md:col-span-2">
+                                <label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="graduation_year">Year of Graduation</label>
+                                <input wire:model="graduation_year" class="w-full px-4 py-3 border @error('graduation_year') border-red-500 @else border-slate-200 @enderror rounded-lg focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-300" id="graduation_year" placeholder="e.g. 2024" type="number" min="2000" max="{{ date('Y') + 1 }}" />
                             </div>
                         </div>
-                    @else
-                        <!-- Steps 2 and 3 Content would go here -->
-                        <div class="text-center py-12">
-                            <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span class="material-symbols-outlined text-[32px]">check_circle</span>
+
+                    @elseif ($currentStep === 3)
+                        <!-- STEP 3: Documents -->
+                        <div class="border-b border-slate-100 pb-4 mb-6">
+                            <h2 class="font-headline-md text-headline-md text-on-surface">Required Documents</h2>
+                            <p class="font-body-md text-body-md text-on-surface-variant">Upload scanned copies of your official documents for verification.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 gap-6">
+                            <!-- Document Identity -->
+                            <div>
+                                <label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="document_identity">Identity Card (KTP/KK)</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-lg @error('document_identity') border-red-500 bg-red-50 @else hover:bg-surface-container-low transition-colors @enderror">
+                                    <div class="space-y-1 text-center">
+                                        @if($document_identity)
+                                            <span class="material-symbols-outlined mx-auto text-4xl text-primary mb-2">task</span>
+                                            <div class="text-sm text-on-surface-variant">File selected</div>
+                                        @else
+                                            <span class="material-symbols-outlined mx-auto text-4xl text-slate-400 mb-2">cloud_upload</span>
+                                            <div class="flex text-sm text-on-surface-variant justify-center">
+                                                <label for="document_identity" class="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary-container focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                                                    <span>Upload a file</span>
+                                                    <input wire:model="document_identity" id="document_identity" name="document_identity" type="file" class="sr-only" accept="image/*">
+                                                </label>
+                                                <p class="pl-1">or drag and drop</p>
+                                            </div>
+                                            <p class="text-xs text-slate-500 mt-2">PNG, JPG, JPEG up to 2MB</p>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
-                            <h2 class="font-headline-md text-headline-md text-on-surface mb-2">Registration Successful</h2>
-                            <p class="font-body-md text-body-md text-on-surface-variant">Redirecting you to the dashboard...</p>
+
+                            <!-- Document Diploma -->
+                            <div>
+                                <label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="document_diploma">Diploma/Certificate (Ijazah/SKL)</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-lg @error('document_diploma') border-red-500 bg-red-50 @else hover:bg-surface-container-low transition-colors @enderror">
+                                    <div class="space-y-1 text-center">
+                                        @if($document_diploma)
+                                            <span class="material-symbols-outlined mx-auto text-4xl text-primary mb-2">task</span>
+                                            <div class="text-sm text-on-surface-variant">File selected</div>
+                                        @else
+                                            <span class="material-symbols-outlined mx-auto text-4xl text-slate-400 mb-2">cloud_upload</span>
+                                            <div class="flex text-sm text-on-surface-variant justify-center">
+                                                <label for="document_diploma" class="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary-container focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary">
+                                                    <span>Upload a file</span>
+                                                    <input wire:model="document_diploma" id="document_diploma" name="document_diploma" type="file" class="sr-only" accept=".pdf,image/*">
+                                                </label>
+                                                <p class="pl-1">or drag and drop</p>
+                                            </div>
+                                            <p class="text-xs text-slate-500 mt-2">PDF, PNG, JPG up to 5MB</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @endif
+
+                    <!-- Action Buttons -->
+                    <div class="pt-8 mt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="order-2 sm:order-1 flex gap-4">
+                            @if ($currentStep > 1)
+                                <button type="button" wire:click="previousStep" class="text-on-surface-variant font-label-md flex items-center gap-2 hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined">arrow_back</span>
+                                    Back
+                                </button>
+                            @else
+                                <button type="button" class="text-on-surface-variant font-label-md flex items-center gap-2 hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined">delete</span>
+                                    Clear Form
+                                </button>
+                            @endif
+                        </div>
+                        <div class="flex gap-4 w-full sm:w-auto order-1 sm:order-2">
+                            <button type="submit" class="flex-1 sm:flex-none bg-primary text-on-primary px-8 py-3 rounded-lg font-label-md hover:shadow-lg hover:shadow-primary/20 transition-all flex items-center justify-center gap-2 w-full">
+                                @if ($currentStep === 3)
+                                    Complete Registration
+                                    <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                                @else
+                                    Next Step
+                                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                                @endif
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
             
             <!-- Terms Footer -->
             <p class="mt-6 text-center text-label-sm text-on-surface-variant px-12">
-                By clicking "Next Step", you agree to our <a class="text-primary underline" href="#">Privacy Policy</a> and <a class="text-primary underline" href="#">Admissions Terms</a>. Your data is encrypted and handled securely.
+                By clicking "{{ $currentStep === 3 ? 'Complete Registration' : 'Next Step' }}", you agree to our <a class="text-primary underline" href="#">Privacy Policy</a> and <a class="text-primary underline" href="#">Admissions Terms</a>. Your data is encrypted and handled securely.
             </p>
         </section>
     </div>

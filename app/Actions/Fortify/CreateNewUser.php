@@ -27,6 +27,10 @@ class CreateNewUser implements CreatesNewUsers
             'birth_date' => ['required', 'date'],
             'gender' => ['required', 'string', 'in:male,female'],
             'program' => ['required', 'string'],
+            'previous_school' => ['required', 'string', 'max:255'],
+            'graduation_year' => ['required', 'integer', 'min:2000', 'max:' . (date('Y') + 1)],
+            'document_identity' => ['nullable', 'string'],
+            'document_diploma' => ['nullable', 'string'],
             'password' => $this->passwordRules(),
         ])->validate();
 
@@ -40,6 +44,10 @@ class CreateNewUser implements CreatesNewUsers
             'birth_date' => $input['birth_date'],
             'gender' => $input['gender'],
             'program' => $input['program'],
+            'previous_school' => $input['previous_school'],
+            'graduation_year' => $input['graduation_year'],
+            'document_identity' => $input['document_identity'] ?? null,
+            'document_diploma' => $input['document_diploma'] ?? null,
         ]);
     }
 }
