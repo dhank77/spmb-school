@@ -188,7 +188,12 @@
                             <!-- Graduation Year -->
                             <div class="md:col-span-2">
                                 <label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="graduation_year">Year of Graduation</label>
-                                <input wire:model="graduation_year" class="w-full px-4 py-3 border @error('graduation_year') border-red-500 @else border-slate-200 @enderror rounded-lg focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-300" id="graduation_year" placeholder="e.g. 2024" type="number" min="2000" max="{{ date('Y') + 1 }}" />
+                                <select wire:model="graduation_year" class="w-full px-4 py-3 border @error('graduation_year') border-red-500 @else border-slate-200 @enderror rounded-lg focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all bg-white" id="graduation_year">
+                                    <option value="">Select Year</option>
+                                    @foreach (range(date('Y') + 1, date('Y') - 5) as $year)
+                                        <option value="{{ $year }}">{{ $year }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
