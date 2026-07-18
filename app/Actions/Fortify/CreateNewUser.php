@@ -21,6 +21,12 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             ...$this->profileRules(),
+            'nisn' => ['required', 'string', 'size:10', 'unique:users'],
+            'nik' => ['required', 'string', 'size:16', 'unique:users'],
+            'birth_place' => ['required', 'string', 'max:255'],
+            'birth_date' => ['required', 'date'],
+            'gender' => ['required', 'string', 'in:male,female'],
+            'program' => ['required', 'string'],
             'password' => $this->passwordRules(),
         ])->validate();
 
@@ -28,6 +34,12 @@ class CreateNewUser implements CreatesNewUsers
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
+            'nisn' => $input['nisn'],
+            'nik' => $input['nik'],
+            'birth_place' => $input['birth_place'],
+            'birth_date' => $input['birth_date'],
+            'gender' => $input['gender'],
+            'program' => $input['program'],
         ]);
     }
 }
