@@ -33,7 +33,7 @@
     @livewireStyles
     @stack('styles')
 </head>
-<body class="bg-surface text-on-surface font-body-md text-body-md overflow-x-hidden antialiased" x-data="{ sidebarOpen: false }">
+<body class="bg-surface text-on-surface font-body-md text-body-md overflow-x-hidden antialiased" x-data="{ sidebarOpen: window.innerWidth >= 1024 }">
     
     <!-- Mobile Sidebar Overlay -->
     <div x-show="sidebarOpen" 
@@ -43,7 +43,7 @@
          style="display: none;"></div>
 
     <!-- Sidebar Navigation -->
-    <aside class="fixed left-0 top-0 h-full p-6 flex flex-col gap-2 bg-surface-container-low border-r border-outline-variant w-[280px] z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0"
+    <aside class="fixed left-0 top-0 h-full p-6 flex flex-col gap-2 bg-surface-container-low border-r border-outline-variant w-[280px] z-50 transition-transform duration-300 -translate-x-full"
            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
         <div class="flex items-center justify-between mb-10 px-2">
             <div class="flex items-center gap-4">
@@ -100,12 +100,12 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="lg:ml-[280px] min-h-screen pb-20 lg:pb-0">
+    <main class="min-h-screen pb-20 lg:pb-0 transition-[margin] duration-300" :class="sidebarOpen ? 'lg:ml-[280px]' : 'lg:ml-0'">
         <!-- Top Navigation Bar -->
         <header class="sticky top-0 w-full z-30 flex justify-between items-center px-6 py-4 bg-surface/90 backdrop-blur border-b border-outline-variant shadow-sm h-16">
             <div class="flex items-center gap-6">
-                <!-- Toggle button for mobile sidebar -->
-                <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-2 -ml-2 rounded-md hover:bg-surface-container-low text-on-surface transition-colors">
+                <!-- Toggle button for sidebar -->
+                <button @click="sidebarOpen = !sidebarOpen" class="p-2 -ml-2 rounded-md hover:bg-surface-container-low text-on-surface transition-colors">
                     <span class="material-symbols-outlined" data-icon="menu">menu</span>
                 </button>
                 <h2 class="font-headline-sm text-headline-sm font-bold text-primary">Portal Calon Murid</h2>
