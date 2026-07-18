@@ -8,15 +8,15 @@
     $isUpcoming = $wave->status === 'upcoming';
 
     $cardClasses = match($wave->status) {
-        'active' => 'bg-surface-container-lowest border-2 border-primary p-[var(--spacing-md)] rounded-3xl relative overflow-hidden shadow-xl transform scale-105 z-10',
-        'closed' => 'bg-surface-container-lowest border border-outline-variant p-[var(--spacing-md)] rounded-3xl relative overflow-hidden shadow-sm group hover:shadow-md transition-shadow',
-        'upcoming' => 'bg-surface-container-lowest border border-outline-variant p-[var(--spacing-md)] rounded-3xl relative overflow-hidden shadow-sm hover:shadow-md transition-shadow',
+        'active' => 'bg-surface-container-lowest border-2 border-primary p-md rounded-3xl relative overflow-hidden shadow-xl transform scale-105 z-10',
+        'closed' => 'bg-surface-container-lowest border border-outline-variant p-md rounded-3xl relative overflow-hidden shadow-sm group hover:shadow-md transition-shadow',
+        'upcoming' => 'bg-surface-container-lowest border border-outline-variant p-md rounded-3xl relative overflow-hidden shadow-sm hover:shadow-md transition-shadow',
     };
 
     $badgeClasses = match($wave->status) {
-        'active' => 'bg-secondary text-on-secondary text-[10px] uppercase font-bold px-[var(--spacing-sm)] py-1 rounded-full animate-pulse',
-        'closed' => 'bg-error-container text-on-error-container text-[10px] uppercase font-bold px-[var(--spacing-sm)] py-1 rounded-full',
-        'upcoming' => 'bg-surface-container-highest text-on-surface-variant text-[10px] uppercase font-bold px-[var(--spacing-sm)] py-1 rounded-full',
+        'active' => 'bg-secondary text-on-secondary text-[10px] uppercase font-bold px-sm py-1 rounded-full animate-pulse',
+        'closed' => 'bg-error-container text-on-error-container text-[10px] uppercase font-bold px-sm py-1 rounded-full',
+        'upcoming' => 'bg-surface-container-highest text-on-surface-variant text-[10px] uppercase font-bold px-sm py-1 rounded-full',
     };
 
     $badgeText = match($wave->status) {
@@ -45,14 +45,14 @@
 @endphp
 
 <div class="{{ $cardClasses }}">
-    <div class="absolute top-0 right-0 p-[var(--spacing-sm)]">
+    <div class="absolute top-0 right-0 p-sm">
         <span class="{{ $badgeClasses }}">{{ $badgeText }}</span>
     </div>
 
-    <h3 class="font-headline-sm text-headline-sm {{ $titleColor }} mb-[var(--spacing-xs)]">{{ $wave->name }}</h3>
-    <p class="text-label-sm font-label-sm text-on-surface-variant mb-[var(--spacing-md)]">{{ $wave->period }}</p>
+    <h3 class="font-headline-sm text-headline-sm {{ $titleColor }} mb-xs">{{ $wave->name }}</h3>
+    <p class="text-label-sm font-label-sm text-on-surface-variant mb-md">{{ $wave->period }}</p>
 
-    <div class="space-y-[var(--spacing-sm)] mb-[var(--spacing-lg)]">
+    <div class="space-y-sm mb-lg">
         <div class="flex justify-between items-center">
             <span class="text-label-md text-on-surface-variant">Registration Cost</span>
             <span class="font-bold text-on-surface">{{ $wave->formatted_cost }}</span>
@@ -68,14 +68,14 @@
     </div>
 
     @if($isClosed)
-        <button class="w-full mt-[var(--spacing-lg)] py-[var(--spacing-sm)] rounded-lg border border-outline-variant text-outline-variant cursor-not-allowed" disabled>Full Capacity</button>
+        <button class="w-full mt-lg py-sm rounded-lg border border-outline-variant text-outline-variant cursor-not-allowed" disabled>Full Capacity</button>
     @elseif($isActive)
         @if(Route::has('register'))
-            <a href="{{ route('register') }}" class="w-full mt-[var(--spacing-lg)] py-[var(--spacing-sm)] rounded-lg bg-primary text-on-primary font-bold hover:bg-surface-tint transition-colors block text-center">Apply Now</a>
+            <a href="{{ route('register') }}" class="w-full mt-lg py-sm rounded-lg bg-primary text-on-primary font-bold hover:bg-surface-tint transition-colors block text-center">Apply Now</a>
         @else
-            <button class="w-full mt-[var(--spacing-lg)] py-[var(--spacing-sm)] rounded-lg bg-primary text-on-primary font-bold hover:bg-surface-tint transition-colors">Apply Now</button>
+            <button class="w-full mt-lg py-sm rounded-lg bg-primary text-on-primary font-bold hover:bg-surface-tint transition-colors">Apply Now</button>
         @endif
     @else
-        <button class="w-full mt-[var(--spacing-lg)] py-[var(--spacing-sm)] rounded-lg border border-primary text-primary font-bold hover:bg-primary-fixed transition-colors">Notify Me</button>
+        <button class="w-full mt-lg py-sm rounded-lg border border-primary text-primary font-bold hover:bg-primary-fixed transition-colors">Notify Me</button>
     @endif
 </div>

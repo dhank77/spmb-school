@@ -15,6 +15,8 @@
 
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @fluxAppearance
+    @livewireStyles
     @stack('styles')
 </head>
 <body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
@@ -30,5 +32,7 @@
     @include('layouts.partials.landing-footer')
 
     @stack('scripts')
+    @livewireScripts
+    @fluxScripts
 </body>
 </html>
