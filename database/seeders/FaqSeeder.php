@@ -14,23 +14,23 @@ class FaqSeeder extends Seeder
     {
         $faqs = [
             [
-                'question' => 'What are the main requirements for registration?',
-                'answer' => 'Applicants need to provide a digital copy of their previous school certificate, ID card (KTP/Passport), family card, and a recent professional photograph. International students may require additional documentation.',
+                'question' => 'Apa saja persyaratan utama untuk pendaftaran?',
+                'answer' => 'Pendaftar perlu memberikan salinan digital ijazah sekolah sebelumnya, kartu identitas (KTP/Paspor), kartu keluarga, dan foto profesional terbaru. Siswa internasional mungkin memerlukan dokumen tambahan.',
                 'sort_order' => 1,
             ],
             [
-                'question' => 'Is there an entrance exam for all waves?',
-                'answer' => 'Yes, all waves include a Computer Based Test (CBT) covering Logic, English Proficiency, and Basic Mathematics. Results are usually announced within 48 hours.',
+                'question' => 'Apakah ada ujian masuk untuk semua gelombang?',
+                'answer' => 'Ya, semua gelombang mencakup Ujian Berbasis Komputer (CBT) yang meliputi Logika, Kemampuan Berbahasa Inggris, dan Matematika Dasar. Hasil biasanya diumumkan dalam waktu 48 jam.',
                 'sort_order' => 2,
             ],
             [
-                'question' => 'Are scholarships available for new students?',
-                'answer' => 'Absolutely. We offer Merit-Based, Need-Based, and Sports/Arts Achievement scholarships. Applications for scholarships are processed simultaneously with the admission wave.',
+                'question' => 'Apakah ada beasiswa untuk siswa baru?',
+                'answer' => 'Tentu saja. Kami menawarkan beasiswa Berdasarkan Prestasi, Berdasarkan Kebutuhan, dan Prestasi Olahraga/Seni. Pendaftaran beasiswa diproses bersamaan dengan gelombang penerimaan.',
                 'sort_order' => 3,
             ],
             [
-                'question' => 'Can I change my chosen program after registration?',
-                'answer' => 'Program changes are permitted before the CBT date. Please contact the admissions office for assistance with internal program transfers.',
+                'question' => 'Bisakah saya mengubah program yang dipilih setelah pendaftaran?',
+                'answer' => 'Perubahan program diperbolehkan sebelum tanggal CBT. Silakan hubungi kantor penerimaan untuk bantuan transfer program internal.',
                 'sort_order' => 4,
             ],
         ];

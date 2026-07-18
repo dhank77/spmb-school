@@ -20,9 +20,9 @@
     };
 
     $badgeText = match($wave->status) {
-        'active' => 'Active Now',
-        'closed' => 'Closed',
-        'upcoming' => 'Upcoming',
+        'active' => 'Aktif Sekarang',
+        'closed' => 'Ditutup',
+        'upcoming' => 'Mendatang',
     };
 
     $titleColor = $isActive ? 'text-primary' : 'text-on-surface';
@@ -54,12 +54,12 @@
 
     <div class="space-y-sm mb-lg">
         <div class="flex justify-between items-center">
-            <span class="text-label-md text-on-surface-variant">Registration Cost</span>
+            <span class="text-label-md text-on-surface-variant">Biaya Pendaftaran</span>
             <span class="font-bold text-on-surface">{{ $wave->formatted_cost }}</span>
         </div>
         <div class="flex justify-between items-center">
-            <span class="text-label-md text-on-surface-variant">Remaining Quota</span>
-            <span class="font-bold {{ $quotaColor }}">{{ $wave->remaining_quota }} Seats</span>
+            <span class="text-label-md text-on-surface-variant">Kuota Tersisa</span>
+            <span class="font-bold {{ $quotaColor }}">{{ $wave->remaining_quota }} Kursi</span>
         </div>
     </div>
 
@@ -68,14 +68,14 @@
     </div>
 
     @if($isClosed)
-        <button class="w-full mt-lg py-sm rounded-lg border border-outline-variant text-outline-variant cursor-not-allowed" disabled>Full Capacity</button>
+        <button class="w-full mt-lg py-sm rounded-lg border border-outline-variant text-outline-variant cursor-not-allowed" disabled>Kapasitas Penuh</button>
     @elseif($isActive)
         @if(Route::has('register'))
-            <a href="{{ route('register') }}" class="w-full mt-lg py-sm rounded-lg bg-primary text-on-primary font-bold hover:bg-surface-tint transition-colors block text-center">Apply Now</a>
+            <a href="{{ route('register') }}" class="w-full mt-lg py-sm rounded-lg bg-primary text-on-primary font-bold hover:bg-surface-tint transition-colors block text-center">Daftar Sekarang</a>
         @else
-            <button class="w-full mt-lg py-sm rounded-lg bg-primary text-on-primary font-bold hover:bg-surface-tint transition-colors">Apply Now</button>
+            <button class="w-full mt-lg py-sm rounded-lg bg-primary text-on-primary font-bold hover:bg-surface-tint transition-colors">Daftar Sekarang</button>
         @endif
     @else
-        <button class="w-full mt-lg py-sm rounded-lg border border-primary text-primary font-bold hover:bg-primary-fixed transition-colors">Notify Me</button>
+        <button class="w-full mt-lg py-sm rounded-lg border border-primary text-primary font-bold hover:bg-primary-fixed transition-colors">Beritahu Saya</button>
     @endif
 </div>

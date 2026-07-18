@@ -1,28 +1,28 @@
 <x-layouts.landing>
-    @section('title', 'Hitech School SPMB | Admission Portal')
-    @section('meta_description', 'Join an elite ecosystem of innovators, developers, and future leaders. Advanced curriculum, industry mentors, and state-of-the-art tech campus.')
+    @section('title', 'Hitech School SPMB | Portal Penerimaan')
+    @section('meta_description', 'Bergabunglah dengan ekosistem elit inovator, pengembang, dan pemimpin masa depan. Kurikulum tingkat lanjut, mentor industri, dan kampus teknologi terkini.')
 
     <!-- Hero Section -->
     <section class="relative overflow-hidden hero-gradient py-xl lg:py-48">
         <div class="max-w-7xl mx-auto px-gutter grid lg:grid-cols-2 items-center gap-xl">
             <div class="z-10">
                 <span class="inline-block px-sm py-base bg-secondary-container text-on-secondary-container rounded-full font-label-md text-label-md mb-md">
-                    Enrollment Academic Year 2024/2025
+                    Pendaftaran Tahun Ajaran 2024/2025
                 </span>
                 <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-md leading-tight">
-                    Shape Your Future at <span class="text-secondary">Indonesia's Digital Hub</span>
+                    Bentuk Masa Depan Anda di <span class="text-secondary">Pusat Digital Indonesia</span>
                 </h1>
                 <p class="text-body-lg font-body-lg text-on-surface-variant mb-lg">
-                    Join an elite ecosystem of innovators, developers, and future leaders. Advanced curriculum, industry mentors, and state-of-the-art tech campus.
+                    Bergabunglah dengan ekosistem elit inovator, pengembang, dan pemimpin masa depan. Kurikulum tingkat lanjut, mentor industri, dan kampus teknologi terkini.
                 </p>
                 <div class="flex flex-wrap gap-md">
                     @if(Route::has('register'))
                         <a href="{{ route('register') }}" class="bg-primary text-on-primary px-xl py-md rounded-xl font-headline-sm text-headline-sm shadow-lg hover:shadow-xl transition-all active:scale-95">
-                            Register Now
+                            Daftar Sekarang
                         </a>
                     @endif
                     <button class="border-2 border-primary text-primary px-xl py-md rounded-xl font-headline-sm text-headline-sm hover:bg-primary-fixed transition-all">
-                        Virtual Tour
+                        Tur Virtual
                     </button>
                 </div>
             </div>
@@ -45,8 +45,8 @@
     <section id="admission-waves" class="py-xl bg-surface">
         <div class="max-w-7xl mx-auto px-gutter">
             <div class="text-center mb-xl">
-                <h2 class="font-headline-md text-headline-md text-primary mb-xs">Active Admission Waves</h2>
-                <p class="text-on-surface-variant">Secure your spot early to receive exclusive scholarships and benefits.</p>
+                <h2 class="font-headline-md text-headline-md text-primary mb-xs">Gelombang Penerimaan Aktif</h2>
+                <p class="text-on-surface-variant">Amankan tempat Anda lebih awal untuk mendapatkan beasiswa eksklusif dan keuntungan.</p>
             </div>
             <div class="grid md:grid-cols-3 gap-lg">
                 @forelse($waves as $wave)
@@ -54,7 +54,7 @@
                 @empty
                     <div class="col-span-3 text-center py-12 text-on-surface-variant">
                         <span class="material-symbols-outlined text-4xl mb-4 block">event_busy</span>
-                        <p>No admission waves available at the moment.</p>
+                        <p>Tidak ada gelombang penerimaan tersedia saat ini.</p>
                     </div>
                 @endforelse
             </div>
@@ -68,8 +68,8 @@
                 <div class="md:col-span-2 bg-primary p-lg rounded-3xl text-on-primary flex flex-col justify-between">
                     <div>
                         <span class="material-symbols-outlined text-4xl mb-md">rocket_launch</span>
-                        <h2 class="font-headline-md text-headline-md mb-sm">98% Graduate Success Rate</h2>
-                        <p class="text-primary-fixed opacity-90">Our students transition directly into high-growth tech careers or top-tier universities worldwide.</p>
+                        <h2 class="font-headline-md text-headline-md mb-sm">98% Tingkat Keberhasilan Lulusan</h2>
+                        <p class="text-primary-fixed opacity-90">Siswa kami langsung beralih ke karir teknologi berpertumbuhan tinggi atau universitas terkemuka di seluruh dunia.</p>
                     </div>
                     <div class="mt-lg flex -space-x-4">
                         <img class="w-12 h-12 rounded-full border-2 border-white object-cover" alt="Student portrait 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-vPnoF7ymi8cok63GC7_Map29xTBdah-45NIAT8Ykmbm267lUO6HWd70SZKDPmUj7M9_hJwRvDgz1EQAaPTAtt9qwMHCjsvoV-0cg6vlK0RZTjyUjvc8yhZKWDwqojT87KkDx2Vsxw4tLKGqR36Dx6AWC_fzaNNVZK6ZQmww0ufQRVYyXeufQyY-2SPGVAK6vCjI6iUsNp5SHzYaFXsSgbEH0vR-xYo7DS5bl8zPDQVqULuT6ZyHI" />
@@ -81,12 +81,12 @@
                 <div class="bg-white p-lg rounded-3xl shadow-sm border border-outline-variant">
                     <span class="material-symbols-outlined text-secondary text-4xl mb-md">laptop_mac</span>
                     <h4 class="text-4xl font-bold text-primary">50+</h4>
-                    <p class="text-on-surface-variant">Global Industry Partners</p>
+                    <p class="text-on-surface-variant">Mitra Industri Global</p>
                 </div>
                 <div class="bg-white p-lg rounded-3xl shadow-sm border border-outline-variant">
                     <span class="material-symbols-outlined text-secondary text-4xl mb-md">emoji_events</span>
                     <h4 class="text-4xl font-bold text-primary">12</h4>
-                    <p class="text-on-surface-variant">National Tech Awards</p>
+                    <p class="text-on-surface-variant">Penghargaan Teknologi Nasional</p>
                 </div>
                 <div class="md:col-span-4 glass-card p-lg rounded-3xl border border-white flex flex-col md:flex-row items-center gap-lg justify-between">
                     <div class="flex items-center gap-md">
@@ -94,11 +94,11 @@
                             <span class="material-symbols-outlined text-primary text-3xl">verified</span>
                         </div>
                         <div>
-                            <h4 class="font-headline-sm text-headline-sm text-on-surface">ISO 9001:2015 Certified</h4>
-                            <p class="text-on-surface-variant">Commitment to international standards in educational management.</p>
+                            <h4 class="font-headline-sm text-headline-sm text-on-surface">Sertifikasi ISO 9001:2015</h4>
+                            <p class="text-on-surface-variant">Komitmen terhadap standar internasional dalam manajemen pendidikan.</p>
                         </div>
                     </div>
-                    <button class="bg-secondary text-on-secondary px-lg py-sm rounded-full font-bold shadow-md">Download Brochure</button>
+                    <button class="bg-secondary text-on-secondary px-lg py-sm rounded-full font-bold shadow-md">Unduh Brosur</button>
                 </div>
             </div>
         </div>
@@ -108,14 +108,14 @@
     <section id="faq" class="py-xl max-w-7xl mx-auto px-gutter">
         <div class="flex flex-col lg:flex-row gap-xl">
             <div class="lg:w-1/3">
-                <h2 class="font-display-lg text-display-lg-mobile text-primary mb-md">Got Questions?</h2>
-                <p class="text-on-surface-variant mb-lg">We're here to help you navigate your journey. If you can't find what you're looking for, feel free to contact our support team.</p>
+                <h2 class="font-display-lg text-display-lg-mobile text-primary mb-md">Punya Pertanyaan?</h2>
+                <p class="text-on-surface-variant mb-lg">Kami di sini untuk membantu Anda menavigasi perjalanan Anda. Jika Anda tidak menemukan yang Anda cari, jangan ragu untuk menghubungi tim dukungan kami.</p>
                 <div class="p-md bg-primary-fixed/20 rounded-2xl border border-primary-fixed/30">
-                    <h4 class="font-bold text-primary mb-xs">Admissions Hotline</h4>
+                    <h4 class="font-bold text-primary mb-xs">Hotline Penerimaan</h4>
                     <p class="text-body-md text-on-surface-variant mb-md">(021) 555-0123</p>
                     <button class="flex items-center gap-xs text-primary font-bold">
                         <span class="material-symbols-outlined">chat</span>
-                        WhatsApp Support
+                        Dukungan WhatsApp
                     </button>
                 </div>
             </div>
@@ -125,7 +125,7 @@
                 @empty
                     <div class="text-center py-12 text-on-surface-variant">
                         <span class="material-symbols-outlined text-4xl mb-4 block">help_outline</span>
-                        <p>No FAQs available at the moment.</p>
+                        <p>Tidak ada FAQ tersedia saat ini.</p>
                     </div>
                 @endforelse
             </div>
@@ -138,13 +138,13 @@
             <div class="absolute inset-0 opacity-10">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
             </div>
-            <h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary-container mb-md relative z-10">Ready to Begin Your Journey?</h2>
-            <p class="text-primary-fixed opacity-90 text-body-lg max-w-2xl mx-auto mb-xl relative z-10">Don't wait for the next wave. Join hundreds of students who have already secured their place in the next generation of leaders.</p>
+            <h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary-container mb-md relative z-10">Siap Memulai Perjalanan Anda?</h2>
+            <p class="text-primary-fixed opacity-90 text-body-lg max-w-2xl mx-auto mb-xl relative z-10">Jangan tunggu gelombang berikutnya. Bergabunglah dengan ratusan siswa yang telah mengamankan tempat mereka di generasi pemimpin berikutnya.</p>
             <div class="flex flex-col sm:flex-row justify-center gap-md relative z-10">
                 @if(Route::has('register'))
-                    <a href="{{ route('register') }}" class="bg-secondary-container text-on-secondary-container px-xl py-md rounded-xl font-bold text-headline-sm hover:bg-secondary-fixed transition-all shadow-xl">Apply Now</a>
+                     <a href="{{ route('register') }}" class="bg-secondary-container text-on-secondary-container px-xl py-md rounded-xl font-bold text-headline-sm hover:bg-secondary-fixed transition-all shadow-xl">Daftar Sekarang</a>
                 @endif
-                <button class="bg-white/10 text-white backdrop-blur-sm border border-white/20 px-xl py-md rounded-xl font-bold text-headline-sm hover:bg-white/20 transition-all">Schedule a Call</button>
+                <button class="bg-white/10 text-white backdrop-blur-sm border border-white/20 px-xl py-md rounded-xl font-bold text-headline-sm hover:bg-white/20 transition-all">Jadwalkan Panggilan</button>
             </div>
         </div>
     </section>

@@ -28,7 +28,7 @@ class CreateNewUser implements CreatesNewUsers
             'gender' => ['required', 'string', 'in:male,female'],
             'program' => ['required', 'string'],
             'previous_school' => ['required', 'string', 'max:255'],
-            'graduation_year' => ['required', 'integer', 'min:2000', 'max:' . (date('Y') + 1)],
+            'graduation_year' => ['required', 'integer', 'min:2000', 'max:'.(date('Y') + 1)],
             'document_identity' => ['nullable', 'string'],
             'document_diploma' => ['nullable', 'string'],
             'password' => $this->passwordRules(),

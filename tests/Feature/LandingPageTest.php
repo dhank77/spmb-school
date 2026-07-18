@@ -27,13 +27,13 @@ test('landing page displays admission waves from database', function () {
     $response->assertStatus(200);
     $response->assertSee('Gelombang Test');
     $response->assertSee('Rp 350.000');
-    $response->assertSee('42 Seats');
+    $response->assertSee('42 Kursi');
 });
 
 test('landing page displays faqs from database', function () {
     Faq::factory()->create([
-        'question' => 'What is the test about?',
-        'answer' => 'It covers logic and math.',
+        'question' => 'Apa saja persyaratan utama untuk pendaftaran?',
+        'answer' => 'Pendaftar perlu memberikan salinan digital ijazah sekolah sebelumnya.',
         'is_active' => true,
         'sort_order' => 1,
     ]);
@@ -41,8 +41,8 @@ test('landing page displays faqs from database', function () {
     $response = $this->get(route('home'));
 
     $response->assertStatus(200);
-    $response->assertSee('What is the test about?');
-    $response->assertSee('It covers logic and math.');
+    $response->assertSee('Apa saja persyaratan utama untuk pendaftaran?');
+    $response->assertSee('Pendaftar perlu memberikan salinan digital ijazah sekolah sebelumnya.');
 });
 
 test('landing page does not display inactive faqs', function () {
@@ -69,8 +69,8 @@ test('wave card shows correct status for closed wave', function () {
 
     $response->assertStatus(200);
     $response->assertSee('Gelombang Closed');
-    $response->assertSee('Full Capacity');
-    $response->assertSee('Closed');
+    $response->assertSee('Kapasitas Penuh');
+    $response->assertSee('Ditutup');
 });
 
 test('wave card shows correct status for active wave', function () {
@@ -83,8 +83,8 @@ test('wave card shows correct status for active wave', function () {
 
     $response->assertStatus(200);
     $response->assertSee('Gelombang Active');
-    $response->assertSee('Apply Now');
-    $response->assertSee('Active Now');
+    $response->assertSee('Daftar Sekarang');
+    $response->assertSee('Aktif Sekarang');
 });
 
 test('wave card shows correct status for upcoming wave', function () {
@@ -97,20 +97,20 @@ test('wave card shows correct status for upcoming wave', function () {
 
     $response->assertStatus(200);
     $response->assertSee('Gelombang Upcoming');
-    $response->assertSee('Notify Me');
-    $response->assertSee('Upcoming');
+    $response->assertSee('Beritahu Saya');
+    $response->assertSee('Mendatang');
 });
 
 test('landing page shows empty state when no waves exist', function () {
     $response = $this->get(route('home'));
 
     $response->assertStatus(200);
-    $response->assertSee('No admission waves available at the moment.');
+    $response->assertSee('Tidak ada gelombang penerimaan tersedia saat ini.');
 });
 
 test('landing page shows empty state when no faqs exist', function () {
     $response = $this->get(route('home'));
 
     $response->assertStatus(200);
-    $response->assertSee('No FAQs available at the moment.');
+    $response->assertSee('Tidak ada FAQ tersedia saat ini.');
 });

@@ -15,22 +15,33 @@ class SmartForm extends Component
 
     // Step 1
     public $name = '';
+
     public $nisn = '';
+
     public $nik = '';
+
     public $birth_place = '';
+
     public $birth_date = '';
+
     public $gender = '';
+
     public $program = '';
+
     public $email = '';
+
     public $password = '';
+
     public $password_confirmation = '';
 
     // Step 2
     public $previous_school = '';
+
     public $graduation_year = '';
 
     // Step 3
     public $document_identity;
+
     public $document_diploma;
 
     public function mount()
@@ -58,7 +69,7 @@ class SmartForm extends Component
         } elseif ($this->currentStep === 2) {
             $this->validate([
                 'previous_school' => ['required', 'string', 'max:255'],
-                'graduation_year' => ['required', 'integer', 'min:2000', 'max:' . (date('Y') + 1)],
+                'graduation_year' => ['required', 'integer', 'min:2000', 'max:'.(date('Y') + 1)],
             ]);
             $this->currentStep = 3;
         }
@@ -99,7 +110,7 @@ class SmartForm extends Component
         ]);
 
         Auth::login($user);
-        
+
         return redirect()->route('dashboard');
     }
 
