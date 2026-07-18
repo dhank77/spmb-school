@@ -19,6 +19,9 @@
         "livewire-development",
         "pest-testing",
         "tailwindcss-development",
-        "blaze-optimize"
+        "blaze-optimize",
+        "laravel-specialist",
+        "stitch-laravel-converter",
+        "stitch-laravel-functionalizer"
     ]
 }
