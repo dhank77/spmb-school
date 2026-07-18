@@ -9,8 +9,64 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
+    /* ── Stitch Design System Colors ── */
+    --color-primary: #055610;
+    --color-primary-container: #276f27;
+    --color-primary-fixed: #a8f59c;
+    --color-primary-fixed-dim: #8dd983;
+    --color-on-primary: #ffffff;
+    --color-on-primary-container: #a3f097;
+    --color-on-primary-fixed: #002202;
+    --color-on-primary-fixed-variant: #01530d;
+    --color-inverse-primary: #8dd983;
+
+    --color-secondary: #2d6c00;
+    --color-secondary-container: #9ef669;
+    --color-secondary-fixed: #a1f96c;
+    --color-secondary-fixed-dim: #86dc53;
+    --color-on-secondary: #ffffff;
+    --color-on-secondary-container: #307100;
+    --color-on-secondary-fixed: #092100;
+    --color-on-secondary-fixed-variant: #205100;
+
+    --color-tertiary: #325200;
+    --color-tertiary-container: #436c00;
+    --color-tertiary-fixed: #b6f562;
+    --color-tertiary-fixed-dim: #9bd849;
+    --color-on-tertiary: #ffffff;
+    --color-on-tertiary-container: #b0ef5d;
+    --color-on-tertiary-fixed: #102000;
+    --color-on-tertiary-fixed-variant: #304f00;
+
+    --color-error: #ba1a1a;
+    --color-error-container: #ffdad6;
+    --color-on-error: #ffffff;
+    --color-on-error-container: #93000a;
+
+    --color-surface: #f7f9fb;
+    --color-surface-bright: #f7f9fb;
+    --color-surface-dim: #d8dadc;
+    --color-surface-tint: #246c24;
+    --color-surface-variant: #e0e3e5;
+    --color-surface-container: #eceef0;
+    --color-surface-container-low: #f2f4f6;
+    --color-surface-container-high: #e6e8ea;
+    --color-surface-container-highest: #e0e3e5;
+    --color-surface-container-lowest: #ffffff;
+
+    --color-on-surface: #191c1e;
+    --color-on-surface-variant: #40493d;
+    --color-on-background: #191c1e;
+    --color-background: #f7f9fb;
+    --color-inverse-surface: #2d3133;
+    --color-inverse-on-surface: #eff1f3;
+
+    --color-outline: #707a6c;
+    --color-outline-variant: #c0c9ba;
+
+    /* ── Zinc (kept for Flux UI compatibility) ── */
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
     --color-zinc-200: #e5e5e5;
@@ -23,21 +79,120 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
-    --color-accent-foreground: var(--color-white);
+    --color-accent: var(--color-primary);
+    --color-accent-content: var(--color-primary);
+    --color-accent-foreground: var(--color-on-primary);
+
+    /* ── Spacing ── */
+    --spacing-base: 4px;
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 40px;
+    --spacing-xl: 64px;
+    --spacing-gutter: 24px;
+    --spacing-margin-mobile: 16px;
+    --spacing-max-width-content: 1280px;
+}
+
+/* ── Typography Utility Classes ── */
+@utility font-display-lg {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+@utility text-display-lg {
+    font-size: 48px;
+    line-height: 56px;
+}
+
+@utility text-display-lg-mobile {
+    font-size: 32px;
+    line-height: 40px;
+}
+
+@utility font-headline-md {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+@utility text-headline-md {
+    font-size: 24px;
+    line-height: 32px;
+}
+
+@utility font-headline-sm {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+@utility text-headline-sm {
+    font-size: 20px;
+    line-height: 28px;
+}
+
+@utility font-body-lg {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+}
+
+@utility text-body-lg {
+    font-size: 18px;
+    line-height: 28px;
+}
+
+@utility font-body-md {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+}
+
+@utility text-body-md {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+@utility font-label-md {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+@utility text-label-md {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.01em;
+}
+
+@utility font-label-sm {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+@utility text-label-sm {
+    font-size: 12px;
+    line-height: 16px;
+}
+
+/* ── Custom Utilities ── */
+@utility glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+@utility hero-gradient {
+    background: linear-gradient(135deg, rgba(5, 86, 16, 0.05) 0%, rgba(187, 220, 18, 0.1) 100%);
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-accent: var(--color-on-primary);
+        --color-accent-content: var(--color-on-primary);
+        --color-accent-foreground: var(--color-primary);
     }
 }
 
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -60,7 +215,3 @@ textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
-
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
