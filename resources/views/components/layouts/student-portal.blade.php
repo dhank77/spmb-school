@@ -30,23 +30,39 @@
         box-shadow: 0px 10px 30px rgba(39, 111, 39, 0.1);
       }
     </style>
+    @livewireStyles
     @stack('styles')
 </head>
-<body class="bg-surface text-on-surface font-body-md text-body-md overflow-x-hidden antialiased">
+<body class="bg-surface text-on-surface font-body-md text-body-md overflow-x-hidden antialiased" x-data="{ sidebarOpen: false }">
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div x-show="sidebarOpen" 
+         x-transition.opacity 
+         class="fixed inset-0 bg-black/50 z-40 lg:hidden" 
+         @click="sidebarOpen = false"
+         style="display: none;"></div>
+
     <!-- Sidebar Navigation -->
-    <aside class="hidden lg:flex flex-col fixed left-0 top-0 h-full p-6 gap-2 bg-surface-container-low border-r border-outline-variant w-[280px] z-50">
-        <div class="flex items-center gap-4 mb-10 px-2">
-            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-on-primary" data-icon="school">school</span>
+    <aside class="fixed left-0 top-0 h-full p-6 flex flex-col gap-2 bg-surface-container-low border-r border-outline-variant w-[280px] z-50 transition-transform duration-300 -translate-x-full lg:translate-x-0"
+           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+        <div class="flex items-center justify-between mb-10 px-2">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                    <span class="material-symbols-outlined text-on-primary" data-icon="school">school</span>
+                </div>
+                <div>
+                    <h1 class="font-headline-sm text-headline-sm font-black text-secondary">Hitech School</h1>
+                    <p class="text-label-sm font-label-sm text-outline">Portal Murid</p>
+                </div>
             </div>
-            <div>
-                <h1 class="font-headline-sm text-headline-sm font-black text-secondary">Hitech School</h1>
-                <p class="text-label-sm font-label-sm text-outline">Institutional Innovation</p>
-            </div>
+            <!-- Close button for mobile -->
+            <button @click="sidebarOpen = false" class="lg:hidden text-on-surface-variant hover:bg-surface-container p-1 rounded-md">
+                <span class="material-symbols-outlined">close</span>
+            </button>
         </div>
         
-        <nav class="flex-1 flex flex-col gap-2">
-            <a class="flex items-center gap-6 px-6 py-4 bg-secondary-container text-on-secondary-container rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="{{ route('dashboard') }}">
+        <nav class="flex-1 flex flex-col gap-2 overflow-y-auto">
+            <a class="flex items-center gap-6 px-6 py-4 {{ request()->routeIs('dashboard') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="{{ route('dashboard') }}">
                 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 <span>Dashboard</span>
             </a>
@@ -84,27 +100,30 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="lg:ml-[280px] min-h-screen">
+    <main class="lg:ml-[280px] min-h-screen pb-20 lg:pb-0">
         <!-- Top Navigation Bar -->
-        <header class="sticky top-0 w-full z-40 flex justify-between items-center px-6 py-4 bg-surface border-b border-outline-variant shadow-sm h-16">
+        <header class="sticky top-0 w-full z-30 flex justify-between items-center px-6 py-4 bg-surface/90 backdrop-blur border-b border-outline-variant shadow-sm h-16">
             <div class="flex items-center gap-6">
-                <span class="lg:hidden material-symbols-outlined text-on-surface cursor-pointer" data-icon="menu">menu</span>
+                <!-- Toggle button for mobile sidebar -->
+                <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-2 -ml-2 rounded-md hover:bg-surface-container-low text-on-surface transition-colors">
+                    <span class="material-symbols-outlined" data-icon="menu">menu</span>
+                </button>
                 <h2 class="font-headline-sm text-headline-sm font-bold text-primary">Portal Calon Murid</h2>
             </div>
             
             <div class="hidden md:flex items-center gap-10">
                 <nav class="flex gap-6">
-                    <a class="font-headline-sm text-headline-sm text-primary border-b-2 border-primary pb-1" href="{{ route('dashboard') }}">Dashboard</a>
+                    <a class="font-headline-sm text-headline-sm {{ request()->routeIs('dashboard') ? 'text-primary border-b-2 border-primary pb-1' : 'text-on-surface-variant hover:text-primary transition-colors' }}" href="{{ route('dashboard') }}">Dashboard</a>
                     <a class="font-headline-sm text-headline-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Jadwal</a>
                     <a class="font-headline-sm text-headline-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Hasil</a>
                 </nav>
             </div>
             
             <div class="flex items-center gap-4">
-                <button class="p-2 rounded-full hover:bg-surface-container-low transition-colors">
+                <button class="p-2 rounded-full hover:bg-surface-container-low transition-colors hidden sm:block">
                     <span class="material-symbols-outlined text-outline" data-icon="notifications">notifications</span>
                 </button>
-                <button class="p-2 rounded-full hover:bg-surface-container-low transition-colors">
+                <button class="p-2 rounded-full hover:bg-surface-container-low transition-colors hidden sm:block">
                     <span class="material-symbols-outlined text-outline" data-icon="help_outline">help_outline</span>
                 </button>
                 <div class="w-10 h-10 rounded-full bg-primary/10 overflow-hidden border border-outline-variant flex items-center justify-center text-primary font-bold">
@@ -119,9 +138,9 @@
         </div>
     </main>
 
-    <!-- Mobile Bottom Navigation -->
-    <nav class="lg:hidden fixed bottom-0 left-0 w-full bg-surface border-t border-outline-variant flex justify-around py-4 z-50">
-        <a href="{{ route('dashboard') }}" class="flex flex-col items-center gap-1 text-primary">
+    <!-- Mobile Bottom Navigation (Optional: Can keep this as a bottom bar for extremely small devices, or remove it entirely in favor of the drawer) -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface border-t border-outline-variant flex justify-around py-4 z-20">
+        <a href="{{ route('dashboard') }}" class="flex flex-col items-center gap-1 {{ request()->routeIs('dashboard') ? 'text-primary' : 'text-on-surface-variant' }}">
             <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
             <span class="text-xs">Home</span>
         </a>
@@ -140,5 +159,6 @@
     </nav>
     
     @stack('scripts')
+    @livewireScripts
 </body>
 </html>
