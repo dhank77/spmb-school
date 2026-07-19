@@ -6,29 +6,52 @@
             <p class="font-body-lg text-body-md text-on-surface-variant max-w-2xl">Manage dynamic access levels and modular permissions for school staff.</p>
         </div>
         
-        <button wire:click="$set('showCreateRoleModal', true)" class="flex items-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md font-bold hover:shadow-lg transition-all active:scale-95">
-            <span class="material-symbols-outlined">person_add</span>
-            Create New Role
-        </button>
+        <flux:modal.trigger name="create-role-modal">
+            <button class="flex items-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md font-bold hover:shadow-lg transition-all active:scale-95">
+                <span class="material-symbols-outlined">person_add</span>
+                Create New Role
+            </button>
+        </flux:modal.trigger>
     </header>
 
-    <flux:modal name="create-role-modal" class="max-w-md" style="width:200px;" wire:model="showCreateRoleModal">
-        <form wire:submit.prevent="createRole" class="space-y-6">
-            <div>
-                <flux:heading size="lg">Create New Role</flux:heading>
-                <flux:subheading>Enter the name of the new role. It will be automatically saved in the database.</flux:subheading>
-            </div>
+    <div class="role-modal-container">
+        <flux:modal name="create-role-modal" class="w-full max-w-md" x-on:role-created.window="$flux.modal('create-role-modal').close()">
+            <form wire:submit="createRole" class="space-y-6">
+                <div>
+                    <flux:heading size="lg">Create New Role</flux:heading>
+                    <flux:subheading>Enter the name of the new role. It will be automatically saved in the database.</flux:subheading>
+                </div>
 
-            <flux:input wire:model="newRoleName" label="Role Name" placeholder="e.g. Admissions Coordinator" />
+                <div>
+                    <flux:input wire:model="newRoleName" label="Role Name" placeholder="e.g. Admissions Coordinator" />
+                    @error('newRoleName')
+                        <span class="text-sm text-error mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
 
-            <div class="flex justify-end space-x-2">
-                <flux:modal.close>
-                    <flux:button variant="filled">Cancel</flux:button>
-                </flux:modal.close>
-                <flux:button variant="primary" type="submit">Create Role</flux:button>
-            </div>
-        </form>
-    </flux:modal>
+                <div class="flex justify-end space-x-2">
+                    <flux:modal.close>
+                        <flux:button variant="filled">Cancel</flux:button>
+                    </flux:modal.close>
+                    <flux:button variant="primary" type="submit">Create Role</flux:button>
+                </div>
+            </form>
+        </flux:modal>
+    </div>
+
+    <style>
+        .role-modal-container dialog,
+        dialog {
+            width: 450px !important;
+            max-width: 90vw !important;
+            margin: auto !important;
+            padding: 1.5rem !important;
+            background: white !important;
+            border-radius: 0.75rem !important;
+            border: 1px solid #e0e3e5 !important;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1) !important;
+        }
+    </style>
 
     @if (session()->has('message'))
         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)" class="mb-4 bg-primary/10 border border-primary/30 text-primary px-4 py-3 rounded-lg relative">

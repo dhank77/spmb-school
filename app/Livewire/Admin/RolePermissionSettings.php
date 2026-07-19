@@ -19,7 +19,6 @@ class RolePermissionSettings extends Component
 
     // For creating new role
     public $newRoleName = '';
-    public $showCreateRoleModal = false;
 
     protected $rules = [
         'newRoleName' => 'required|min:3|unique:roles,name',
@@ -52,10 +51,9 @@ class RolePermissionSettings extends Component
 
         $this->validate();
 
-        Role::create(['name' => $this->newRoleName, 'guard_name' => 'web']);
+        Role::create(['name' => $this->newRoleName]);
 
         $this->newRoleName = '';
-        $this->showCreateRoleModal = false;
         $this->refreshRoles();
 
         $this->dispatch('role-created');
@@ -98,7 +96,7 @@ class RolePermissionSettings extends Component
         // Ensure permissions exist in DB so we can assign them without errors
         foreach ($this->permissionsByCategory as $category => $perms) {
             foreach ($perms as $perm) {
-                Permission::firstOrCreate(['name' => $perm['name'], 'guard_name' => 'web']);
+                Permission::firstOrCreate(['name' => $perm['name']]);
             }
         }
     }
