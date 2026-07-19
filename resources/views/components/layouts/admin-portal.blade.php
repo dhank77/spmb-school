@@ -45,14 +45,14 @@
                 <h1 class="font-headline-sm text-headline-sm font-black text-primary mb-1">Admin Portal</h1>
                 <p class="font-label-md text-label-md text-on-surface-variant">Academic Year {{ date('Y') }}/{{ date('Y') + 1 }}</p>
             </div>
-            <!-- Close button for mobile -->
-            <button @click="sidebarOpen = false" class="lg:hidden text-on-surface-variant hover:bg-surface-container p-1 rounded-md">
+            <!-- Close button -->
+            <button @click="sidebarOpen = false" class="text-on-surface-variant hover:bg-surface-container p-1 rounded-md">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
 
         <nav class="flex-grow space-y-1">
-            <a class="flex items-center gap-sm p-sm {{ request()->routeIs('admin.dashboard') ? 'bg-secondary-container text-on-secondary-container rounded-lg font-bold' : 'text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg' }} font-label-md text-label-md" href="{{ route('admin.pipeline') }}">
+            <a class="flex items-center gap-sm p-sm {{ request()->routeIs('admin.dashboard') ? 'bg-secondary-container text-on-secondary-container rounded-lg font-bold' : 'text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg' }} font-label-md text-label-md" href="{{ route('admin.dashboard') }}">
                 <span class="material-symbols-outlined text-primary">dashboard</span>
                 <span>Dashboard</span>
             </a>
@@ -109,7 +109,7 @@
         <!-- Top Header Action Bar -->
         <header class="h-20 flex items-center justify-between px-gutter border-b border-outline-variant bg-surface-container-lowest flex-shrink-0">
             <div class="flex items-center gap-md">
-                <button @click="sidebarOpen = !sidebarOpen" class="p-2 -ml-2 rounded-md hover:bg-surface-container-low text-on-surface transition-colors lg:hidden">
+                <button @click="sidebarOpen = !sidebarOpen" class="p-2 -ml-2 rounded-md hover:bg-surface-container-low text-on-surface transition-colors">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
                 {{ $header ?? '' }}

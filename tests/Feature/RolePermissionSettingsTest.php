@@ -7,8 +7,11 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
-    Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+    $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
     Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);
+
+    $permission = Permission::firstOrCreate(['name' => 'access.admin_portal', 'guard_name' => 'web']);
+    $admin->givePermissionTo($permission);
 });
 
 test('role settings page requires auth and admin role', function () {

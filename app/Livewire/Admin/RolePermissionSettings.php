@@ -91,6 +91,9 @@ class RolePermissionSettings extends Component
                 ['name' => 'users.add_admin', 'label' => 'Add Admin Staff', 'icon' => 'manage_accounts'],
                 ['name' => 'users.manage_roles', 'label' => 'Set & Change Roles', 'icon' => 'manage_accounts'],
             ],
+            'System Access' => [
+                ['name' => 'access.admin_portal', 'label' => 'Access Admin Portal', 'icon' => 'shield'],
+            ],
         ];
 
         // Ensure permissions exist in DB so we can assign them without errors
@@ -109,6 +112,15 @@ class RolePermissionSettings extends Component
         $superAdmin = Role::where('name', 'super_admin')->first();
         if ($superAdmin) {
             $superAdmin->syncPermissions(Permission::all());
+        }
+
+        // Grant access.admin_portal permission to other administrative roles
+        $rolesToAccessPortal = ['admissions_officer', 'finance_staff', 'cbt_proctor'];
+        foreach ($rolesToAccessPortal as $roleName) {
+            $role = Role::where('name', $roleName)->first();
+            if ($role) {
+                $role->givePermissionTo('access.admin_portal');
+            }
         }
     }
 

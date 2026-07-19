@@ -1,4 +1,8 @@
-<div class="flex-1 p-lg max-w-[1280px] w-full mx-auto overflow-y-auto">
+<div class="flex-1 p-6 lg:p-10 max-w-[1280px] w-full mx-auto overflow-y-auto">
+    <x-slot:header>
+        <h2 class="font-headline-md text-headline-md text-on-surface">Role & Permission Settings</h2>
+    </x-slot:header>
+
     <!-- Header Section -->
     <header class="flex justify-between items-end mb-xl">
         <div class="space-y-xs">

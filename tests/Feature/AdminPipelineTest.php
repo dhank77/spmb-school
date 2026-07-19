@@ -3,11 +3,15 @@
 use App\Livewire\Admin\Pipeline;
 use App\Models\User;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
-    Role::firstOrCreate(['name' => 'admin']);
+    $admin = Role::firstOrCreate(['name' => 'admin']);
     Role::firstOrCreate(['name' => 'student']);
+
+    $permission = Permission::firstOrCreate(['name' => 'access.admin_portal']);
+    $admin->givePermissionTo($permission);
 });
 
 test('pipeline page requires authentication', function () {
@@ -112,7 +116,7 @@ test('pipeline displays total applicant count', function () {
 
     Livewire::actingAs($admin)
         ->test(Pipeline::class)
-        ->assertSee('5 Total Applicants');
+        ->assertViewHas('totalApplicants', 5);
 });
 
 test('user document progress is calculated correctly', function () {
