@@ -22,6 +22,7 @@ return new class extends Migration
      * Reverse the migrations.
      */
     public function down(): void
+    {
         Schema::table('users', function (Blueprint $table) {
             $table->dropIndex(['verification_status']);
             $table->dropColumn(['verification_status', 'registration_number', 'verification_notes']);
