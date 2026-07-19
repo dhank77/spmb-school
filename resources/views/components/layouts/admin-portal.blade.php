@@ -45,8 +45,8 @@
                 <h1 class="font-headline-sm text-headline-sm font-black text-primary mb-1">Admin Portal</h1>
                 <p class="font-label-md text-label-md text-on-surface-variant">Academic Year {{ date('Y') }}/{{ date('Y') + 1 }}</p>
             </div>
-            <!-- Close button -->
-            <button @click="sidebarOpen = false" class="text-on-surface-variant hover:bg-surface-container p-1 rounded-md">
+            <!-- Close button for mobile -->
+            <button @click="sidebarOpen = false" class="lg:hidden text-on-surface-variant hover:bg-surface-container p-1 rounded-md">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
