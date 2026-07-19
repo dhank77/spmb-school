@@ -25,6 +25,7 @@
       .custom-scrollbar::-webkit-scrollbar-thumb { background: #c0c9ba; border-radius: 10px; }
     </style>
     @livewireStyles
+    @fluxAppearance
     @stack('styles')
 </head>
 <body class="bg-background text-on-surface font-body-md text-body-md overflow-hidden antialiased" x-data="{ sidebarOpen: window.innerWidth >= 1024 }">
@@ -117,5 +118,6 @@
 
     @stack('scripts')
     @livewireScripts
+    @fluxScripts
 </body>
 </html>

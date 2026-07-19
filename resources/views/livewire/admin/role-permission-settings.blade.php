@@ -1,4 +1,4 @@
-<div class="flex-1 p-lg max-w-[1280px] w-full mx-auto">
+<div class="flex-1 p-lg max-w-[1280px] w-full mx-auto overflow-y-auto">
     <!-- Header Section -->
     <header class="flex justify-between items-end mb-xl">
         <div class="space-y-xs">
@@ -6,13 +6,13 @@
             <p class="font-body-lg text-body-md text-on-surface-variant max-w-2xl">Manage dynamic access levels and modular permissions for school staff.</p>
         </div>
         
-        <button x-on:click="$flux.modal('create-role-modal').show()" class="flex items-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md font-bold hover:shadow-lg transition-all active:scale-95">
+        <button wire:click="$set('showCreateRoleModal', true)" class="flex items-center gap-xs bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md font-bold hover:shadow-lg transition-all active:scale-95">
             <span class="material-symbols-outlined">person_add</span>
             Create New Role
         </button>
     </header>
 
-    <flux:modal name="create-role-modal" class="max-w-lg" x-on:role-created.window="$flux.modal('create-role-modal').close()">
+    <flux:modal name="create-role-modal" class="max-w-md" style="width:200px;" wire:model="showCreateRoleModal">
         <form wire:submit.prevent="createRole" class="space-y-6">
             <div>
                 <flux:heading size="lg">Create New Role</flux:heading>

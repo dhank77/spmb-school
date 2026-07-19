@@ -74,7 +74,8 @@ test('can create a new role', function () {
         ->test(RolePermissionSettings::class)
         ->set('newRoleName', 'Guest Editor')
         ->call('createRole')
-        ->assertDispatched('role-created');
+        ->assertDispatched('role-created')
+        ->assertSet('showCreateRoleModal', false);
 
     expect(Role::where('name', 'guest_editor')->exists())->toBeTrue();
 });

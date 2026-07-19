@@ -19,6 +19,7 @@ class RolePermissionSettings extends Component
 
     // For creating new role
     public $newRoleName = '';
+    public $showCreateRoleModal = false;
 
     protected $rules = [
         'newRoleName' => 'required|min:3|unique:roles,name',
@@ -54,6 +55,7 @@ class RolePermissionSettings extends Component
         Role::create(['name' => $this->newRoleName, 'guard_name' => 'web']);
 
         $this->newRoleName = '';
+        $this->showCreateRoleModal = false;
         $this->refreshRoles();
 
         $this->dispatch('role-created');
