@@ -34,7 +34,7 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
@@ -49,5 +49,9 @@ class CreateNewUser implements CreatesNewUsers
             'document_identity' => $input['document_identity'] ?? null,
             'document_diploma' => $input['document_diploma'] ?? null,
         ]);
+
+        $user->assignRole('student');
+
+        return $user;
     }
 }

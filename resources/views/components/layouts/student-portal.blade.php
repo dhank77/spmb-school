@@ -66,16 +66,18 @@
                 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 <span>Dashboard</span>
             </a>
-            @role('student')
+            @can('student.active_exams')
             <a class="flex items-center gap-6 px-6 py-4 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="#">
                 <span class="material-symbols-outlined" data-icon="assignment">assignment</span>
                 <span>Ujian Aktif</span>
             </a>
+            @endcan
+            @can('student.exam_history')
             <a class="flex items-center gap-6 px-6 py-4 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="#">
                 <span class="material-symbols-outlined" data-icon="history">history</span>
                 <span>Riwayat Ujian</span>
             </a>
-            @endrole
+            @endcan
         </nav>
         
         <div class="mt-auto pt-6 border-t border-outline-variant">

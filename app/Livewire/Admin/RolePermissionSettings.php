@@ -94,6 +94,10 @@ class RolePermissionSettings extends Component
             'System Access' => [
                 ['name' => 'access.admin_portal', 'label' => 'Access Admin Portal', 'icon' => 'shield'],
             ],
+            'Student Portal' => [
+                ['name' => 'student.active_exams', 'label' => 'Access Active Exams', 'icon' => 'assignment'],
+                ['name' => 'student.exam_history', 'label' => 'View Exam History', 'icon' => 'history'],
+            ],
         ];
 
         // Ensure permissions exist in DB so we can assign them without errors
@@ -121,6 +125,15 @@ class RolePermissionSettings extends Component
             if ($role) {
                 $role->givePermissionTo('access.admin_portal');
             }
+        }
+
+        // Grant student portal permissions to student role
+        $studentRole = Role::where('name', 'student')->first();
+        if ($studentRole) {
+            $studentRole->givePermissionTo([
+                'student.active_exams',
+                'student.exam_history',
+            ]);
         }
     }
 
