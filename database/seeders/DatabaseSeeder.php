@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdmissionWaveSeeder::class,
             FaqSeeder::class,
+            StudentApplicantSeeder::class,
         ]);
     }
 }
