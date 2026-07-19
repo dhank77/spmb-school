@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LandingPageController;
 use App\Livewire\Admin\Pipeline;
+use App\Livewire\Admin\RolePermissionSettings;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
@@ -12,6 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin routes
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/pipeline', Pipeline::class)->name('pipeline');
+        Route::get('/roles', RolePermissionSettings::class)->name('roles');
     });
 });
 
