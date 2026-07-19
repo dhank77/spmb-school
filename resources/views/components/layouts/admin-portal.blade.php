@@ -56,26 +56,36 @@
                 <span class="material-symbols-outlined text-primary">dashboard</span>
                 <span>Dashboard</span>
             </a>
+            @can('admissions.view')
             <a class="flex items-center gap-sm p-sm {{ request()->routeIs('admin.pipeline') ? 'bg-secondary-container text-on-secondary-container rounded-lg font-bold' : 'text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg' }} font-label-md text-label-md" href="{{ route('admin.pipeline') }}">
                 <span class="material-symbols-outlined" @if(request()->routeIs('admin.pipeline')) style="font-variation-settings: 'FILL' 1;" @endif>account_tree</span>
                 <span>Application Pipeline</span>
             </a>
+            @endcan
+            @canany(['cbt.create', 'cbt.monitor', 'cbt.grade'])
             <a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md group" href="#">
                 <span class="material-symbols-outlined text-primary">quiz</span>
                 <span>CBT Management</span>
             </a>
+            @endcanany
+            @can('cbt.grade')
             <a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md group" href="#">
                 <span class="material-symbols-outlined text-primary">grade</span>
                 <span>Scoring & Grading</span>
             </a>
+            @endcan
+            @canany(['finance.invoice', 'finance.reports', 'finance.discount'])
             <a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md group" href="#">
                 <span class="material-symbols-outlined text-primary">payments</span>
                 <span>Finance Reports</span>
             </a>
-            <a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md group" href="#">
-                <span class="material-symbols-outlined text-primary">settings</span>
+            @endcanany
+            @can('users.manage_roles')
+            <a class="flex items-center gap-sm p-sm {{ request()->routeIs('admin.roles') ? 'bg-secondary-container text-on-secondary-container rounded-lg font-bold' : 'text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg' }} font-label-md text-label-md group" href="{{ route('admin.roles') }}">
+                <span class="material-symbols-outlined text-primary" @if(request()->routeIs('admin.roles')) style="font-variation-settings: 'FILL' 1;" @endif>settings</span>
                 <span>Settings</span>
             </a>
+            @endcan
         </nav>
 
         <div class="mt-auto border-t border-outline-variant pt-md">

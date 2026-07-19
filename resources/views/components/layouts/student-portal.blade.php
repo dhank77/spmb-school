@@ -66,6 +66,7 @@
                 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 <span>Dashboard</span>
             </a>
+            @role('student')
             <a class="flex items-center gap-6 px-6 py-4 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="#">
                 <span class="material-symbols-outlined" data-icon="assignment">assignment</span>
                 <span>Ujian Aktif</span>
@@ -74,14 +75,7 @@
                 <span class="material-symbols-outlined" data-icon="history">history</span>
                 <span>Riwayat Ujian</span>
             </a>
-            <a class="flex items-center gap-6 px-6 py-4 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="#">
-                <span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
-                <span>Pusat Bantuan</span>
-            </a>
-            <a class="flex items-center gap-6 px-6 py-4 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="#">
-                <span class="material-symbols-outlined" data-icon="settings">settings</span>
-                <span>Pengaturan</span>
-            </a>
+            @endrole
         </nav>
         
         <div class="mt-auto pt-6 border-t border-outline-variant">

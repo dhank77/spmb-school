@@ -99,6 +99,17 @@ class RolePermissionSettings extends Component
                 Permission::firstOrCreate(['name' => $perm['name']]);
             }
         }
+
+        // Convey convenience permissions to admin & super_admin
+        $admin = Role::where('name', 'admin')->first();
+        if ($admin) {
+            $admin->syncPermissions(Permission::all());
+        }
+
+        $superAdmin = Role::where('name', 'super_admin')->first();
+        if ($superAdmin) {
+            $superAdmin->syncPermissions(Permission::all());
+        }
     }
 
     public function savePermissions()

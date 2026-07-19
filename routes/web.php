@@ -11,7 +11,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 
     // Admin routes
-    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['role:admin|super_admin|admissions_officer|finance_staff|cbt_proctor'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/pipeline', Pipeline::class)->name('pipeline');
         Route::get('/roles', RolePermissionSettings::class)->name('roles');
     });
