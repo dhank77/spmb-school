@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\PaymentOrder;
 use App\Services\DuitkuService;
+use Duitku\Config;
+use Duitku\Pop;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -40,13 +42,11 @@ class PaymentController extends Controller
         $merchantOrderId = $request->query('merchantOrderId');
         $resultCode = $request->query('resultCode');
         $reference = $request->query('reference');
-        $signature = $request->query('signature');
 
         Log::info('Duitku return', [
             'merchantOrderId' => $merchantOrderId,
             'resultCode' => $resultCode,
             'reference' => $reference,
-            'signature' => $signature,
         ]);
 
         // Find the payment order if merchantOrderId is provided
@@ -55,23 +55,45 @@ class PaymentController extends Controller
             $order = PaymentOrder::where('merchant_order_id', $merchantOrderId)->first();
         }
 
-        // Verify the signature from Duitku to ensure it's a valid redirect from Duitku
-        $merchantCode = config('services.duitku.merchant_code');
-        $apiKey = config('services.duitku.api_key');
-        $expectedSignature = md5($merchantCode.$merchantOrderId.$resultCode.$apiKey);
+        // Determine if the payment was successful
+        $isSuccess = false;
 
-        if (! $signature || $signature !== $expectedSignature) {
-            Log::warning('Duitku return signature validation failed', [
-                'received' => $signature,
-                'expected' => $expectedSignature,
-            ]);
-
-            return redirect()->route('billing')
-                ->with('payment_failed', true);
+        // 1. If our database already marked it as success via callback
+        if ($order && $order->status === 'success') {
+            $isSuccess = true;
         }
+        // 2. If it is resultCode '00' but the webhook callback hasn't arrived yet,
+        // we verify the status directly against Duitku's API for security (preventing URL manipulation).
+        elseif ($resultCode === '00' && $merchantOrderId) {
+            try {
+                // Fetch credentials
+                $apiKey = config('services.duitku.api_key');
+                $merchantCode = config('services.duitku.merchant_code');
+                $isSandbox = config('services.duitku.sandbox', true);
 
-        // A payment is successful if Duitku returns resultCode '00' or if our database already marked it as success
-        $isSuccess = $resultCode === '00' || ($order && $order->status === 'success');
+                $duitkuConfig = new Config($apiKey, $merchantCode);
+                $duitkuConfig->setSandboxMode($isSandbox);
+
+                // Call Duitku status checker API
+                $statusResponse = Pop::transactionStatus($merchantOrderId, $duitkuConfig);
+                $transaction = json_decode($statusResponse);
+
+                if ($transaction && isset($transaction->statusCode) && $transaction->statusCode === '00') {
+                    $isSuccess = true;
+
+                    // Sync the order status in database
+                    if ($order) {
+                        $order->update([
+                            'status' => 'success',
+                            'result_code' => '00',
+                            'notes' => 'Verified via redirect return API check',
+                        ]);
+                    }
+                }
+            } catch (Exception $e) {
+                Log::error('Duitku API status check failed on return', ['error' => $e->getMessage()]);
+            }
+        }
 
         if ($isSuccess) {
             // Update the user's status to paid as a safety net if it hasn't been done by the callback yet
