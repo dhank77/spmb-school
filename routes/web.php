@@ -6,16 +6,9 @@ use App\Http\Controllers\PaymentController;
 use App\Livewire\Admin\Pipeline;
 use App\Livewire\Admin\RolePermissionSettings;
 use App\Livewire\Admission\Billing;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
-
-// Payment routes — callback is called by Duitku server (no auth/CSRF needed)
-// return is called by browser after payment, auth may or may not be present
-Route::post('/payment/callback', [PaymentController::class, 'callback'])
-    ->name('payment.callback')
-    ->withoutMiddleware([VerifyCsrfToken::class]);
 
 Route::get('/payment/return', [PaymentController::class, 'return'])
     ->name('payment.return');
