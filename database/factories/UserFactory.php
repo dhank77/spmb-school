@@ -33,6 +33,8 @@ class UserFactory extends Factory
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
+            'payment_status' => 'unpaid',
+            'payment_method' => null,
         ];
     }
 
@@ -112,6 +114,17 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'verification_status' => 'ditolak',
             'verification_notes' => $reason,
+        ]);
+    }
+
+    /**
+     * Student who has completed payment.
+     */
+    public function paid(string $method = 'BCA'): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'payment_status' => 'paid',
+            'payment_method' => $method,
         ]);
     }
 }

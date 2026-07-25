@@ -66,6 +66,16 @@
                 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 <span>Dashboard</span>
             </a>
+            {{-- Tagihan Pembayaran (always visible for students) --}}
+            <a class="flex items-center justify-between px-6 py-4 {{ request()->routeIs('billing') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="{{ route('billing') }}">
+                <div class="flex items-center gap-6">
+                    <span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+                    <span>Tagihan Pembayaran</span>
+                </div>
+                @if(Auth::check() && !Auth::user()->isPaid())
+                <span class="text-[9px] font-bold bg-error text-on-error px-1.5 py-0.5 rounded-full">UNPAID</span>
+                @endif
+            </a>
             @can('student.active_exams')
             <a class="flex items-center gap-6 px-6 py-4 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="#">
                 <span class="material-symbols-outlined" data-icon="assignment">assignment</span>
@@ -139,6 +149,13 @@
         <a href="{{ route('dashboard') }}" class="flex flex-col items-center gap-1 {{ request()->routeIs('dashboard') ? 'text-primary' : 'text-on-surface-variant' }}">
             <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
             <span class="text-xs">Home</span>
+        </a>
+        <a href="{{ route('billing') }}" class="flex flex-col items-center gap-1 relative {{ request()->routeIs('billing') ? 'text-primary' : 'text-on-surface-variant' }}">
+            <span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+            @if(Auth::check() && !Auth::user()->isPaid())
+            <span class="absolute -top-1 right-0 w-2 h-2 rounded-full bg-error"></span>
+            @endif
+            <span class="text-xs">Tagihan</span>
         </a>
         <a href="#" class="flex flex-col items-center gap-1 text-on-surface-variant">
             <span class="material-symbols-outlined" data-icon="assignment">assignment</span>

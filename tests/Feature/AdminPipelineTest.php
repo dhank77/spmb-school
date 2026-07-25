@@ -20,7 +20,9 @@ test('pipeline page requires authentication', function () {
 });
 
 test('pipeline page requires admin role', function () {
-    $student = User::factory()->create();
+    // Student must have paid status so PaymentRequired middleware passes,
+    // then the admin authorization check returns 403
+    $student = User::factory()->paid()->create();
     $student->assignRole('student');
 
     $this->actingAs($student)

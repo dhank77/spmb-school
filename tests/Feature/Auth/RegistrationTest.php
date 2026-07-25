@@ -1,9 +1,12 @@
 <?php
 
 use Laravel\Fortify\Features;
+use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
     $this->skipUnlessFortifyHas(Features::registration());
+    Role::firstOrCreate(['name' => 'student']);
+    Role::firstOrCreate(['name' => 'admin']);
 });
 
 test('registration screen can be rendered', function () {
@@ -28,6 +31,8 @@ test('new users can register', function () {
         'graduation_year' => 2024,
     ]);
 
+    // After registration the user is unpaid, so PaymentRequired middleware
+    // redirects them from /dashboard to /billing.
     $response->assertSessionHasNoErrors()
         ->assertRedirect(route('dashboard', absolute: false));
 

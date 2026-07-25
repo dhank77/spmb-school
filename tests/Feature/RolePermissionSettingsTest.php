@@ -18,7 +18,9 @@ test('role settings page requires auth and admin role', function () {
     $this->get('/admin/roles')
         ->assertRedirect('/login');
 
-    $student = User::factory()->create();
+    // Student must have paid status so PaymentRequired middleware passes,
+    // then the admin authorization check returns 403
+    $student = User::factory()->paid()->create();
     $student->assignRole('student');
 
     $this->actingAs($student)

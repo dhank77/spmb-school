@@ -27,10 +27,12 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $two_factor_recovery_codes
  * @property Carbon|null $two_factor_confirmed_at
  * @property string|null $remember_token
+ * @property string $payment_status
+ * @property string|null $payment_method
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password', 'nisn', 'nik', 'birth_place', 'birth_date', 'gender', 'program', 'previous_school', 'graduation_year', 'document_identity', 'document_diploma', 'verification_status', 'registration_number', 'verification_notes'])]
+#[Fillable(['name', 'email', 'password', 'nisn', 'nik', 'birth_place', 'birth_date', 'gender', 'program', 'previous_school', 'graduation_year', 'document_identity', 'document_diploma', 'verification_status', 'registration_number', 'verification_notes', 'payment_status', 'payment_method'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -100,6 +102,14 @@ class User extends Authenticatable implements PasskeyUser
     public function getDocumentsTotalAttribute(): int
     {
         return 5;
+    }
+
+    /**
+     * Check if the user has completed payment.
+     */
+    public function isPaid(): bool
+    {
+        return $this->payment_status === 'paid';
     }
 
     /**

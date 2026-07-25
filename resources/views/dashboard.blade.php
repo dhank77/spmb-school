@@ -1,5 +1,14 @@
 <x-layouts.student-portal :title="__('Dashboard')">
-    
+
+    {{-- Payment Success Flash --}}
+    @if(session('payment_success'))
+    <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
+         class="mb-6 bg-secondary-container text-on-secondary-container p-4 rounded-xl flex items-center gap-4 animate-pulse"
+         style="animation-duration: 2s; animation-iteration-count: 3;">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        <p class="font-body-md text-body-md font-medium">Pembayaran berhasil! Selamat datang di portal calon murid Hitech School.</p>
+    </div>
+    @endif
     <!-- Hero Welcome Section -->
     <section class="mb-16 relative overflow-hidden rounded-3xl bg-primary px-6 py-10 md:px-16 text-on-primary shadow-lg">
         <div class="relative z-10 grid md:grid-cols-2 items-center gap-10">
