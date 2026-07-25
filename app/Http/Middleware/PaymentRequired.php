@@ -20,10 +20,15 @@ class PaymentRequired
         $user = $request->user();
 
         if ($user && $user->hasRole('student') && ! $user->isPaid()) {
-            // Allow access to billing page and Livewire/assets without redirect loop
+            // Allow access to billing page, payment routes, and Livewire updates/assets without redirect loop.
+            // Note: Livewire component updates POST back to the current route (e.g. /billing),
+            // so we must check for the X-Livewire header.
             if (
                 $request->routeIs('billing') ||
                 $request->routeIs('logout') ||
+                $request->routeIs('payment.callback') ||
+                $request->routeIs('payment.return') ||
+                $request->hasHeader('X-Livewire') ||
                 $request->is('livewire/*') ||
                 $request->is('_ignition/*')
             ) {

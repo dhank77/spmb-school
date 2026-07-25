@@ -1,7 +1,9 @@
 <?php
 
 use App\Livewire\Admission\Billing;
+use App\Models\PaymentOrder;
 use App\Models\User;
+use App\Services\DuitkuService;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 
@@ -54,18 +56,50 @@ test('student cannot pay without selecting a method', function () {
         ->assertHasErrors(['selectedMethod']);
 });
 
-test('student payment marks user as paid and redirects to dashboard', function () {
+test('clicking pay now redirects to duitku payment url', function () {
     $user = User::factory()->student()->create(['payment_status' => 'unpaid']);
     $user->assignRole('student');
+
+    // Create a mock order that we expect DuitkuService to return
+    $fakeOrder = new PaymentOrder([
+        'user_id' => $user->id,
+        'merchant_order_id' => 'SPMB-TEST-'.time(),
+        'payment_method' => 'BC',
+        'amount' => 250772,
+        'status' => 'pending',
+        'reference' => 'https://sandbox.duitku.com/payment/test-url',
+    ]);
+
+    $mockService = Mockery::mock(DuitkuService::class);
+    $mockService->shouldReceive('createInvoice')
+        ->once()
+        ->andReturn($fakeOrder);
+
+    app()->instance(DuitkuService::class, $mockService);
+
+    Livewire::actingAs($user)
+        ->test(Billing::class)
+        ->set('selectedMethod', 'BCA')
+        ->call('payNow')
+        ->assertRedirect('https://sandbox.duitku.com/payment/test-url');
+});
+
+test('shows error message when duitku api fails', function () {
+    $user = User::factory()->student()->create(['payment_status' => 'unpaid']);
+    $user->assignRole('student');
+
+    $mockService = Mockery::mock(DuitkuService::class);
+    $mockService->shouldReceive('createInvoice')
+        ->once()
+        ->andThrow(new Exception('API error'));
+
+    app()->instance(DuitkuService::class, $mockService);
 
     Livewire::actingAs($user)
         ->test(Billing::class)
         ->set('selectedMethod', 'BNI')
         ->call('payNow')
-        ->assertRedirect(route('dashboard'));
-
-    expect($user->fresh()->payment_status)->toBe('paid');
-    expect($user->fresh()->payment_method)->toBe('BNI');
+        ->assertSet('processingError', true);
 });
 
 test('unpaid student is redirected to billing when accessing dashboard', function () {
@@ -90,7 +124,6 @@ test('admin users bypass payment gate', function () {
     $admin = User::factory()->create(['payment_status' => 'unpaid']);
     $admin->assignRole('admin');
 
-    // Admin should not be gated by payment middleware
     $this->actingAs($admin)
         ->get(route('dashboard'))
         ->assertOk();

@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'duitku' => [
+        'api_key' => env('DUITKU_API_KEY'),
+        'merchant_code' => env('DUITKU_CODE_MERCHANT'),
+        'sandbox' => env('DUITKU_MODE', 'sandbox') === 'sandbox',
+    ],
+
 ];
