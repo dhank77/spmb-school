@@ -74,12 +74,15 @@ test('cbt management shows total questions count', function () {
         ->assertViewHas('totalQuestions', 1500);
 });
 
-test('admin can schedule a new exam', function () {
+test('admin can schedule a new exam selecting a subject', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
 
+    $subject = CbtSubject::factory()->create(['name' => 'Biologi Sel']);
+
     Livewire::actingAs($admin)
         ->test(CbtManagement::class)
+        ->set('examSubjectId', $subject->id)
         ->set('examName', 'Midterm Batch A')
         ->set('examDate', now()->addDays(5)->format('Y-m-d'))
         ->set('examSession', 'Jam 08:00')
@@ -88,7 +91,7 @@ test('admin can schedule a new exam', function () {
         ->assertDispatched('exam-scheduled')
         ->assertSet('scheduledSuccess', true);
 
-    expect(CbtExam::where('name', 'Midterm Batch A')->exists())->toBeTrue();
+    expect(CbtExam::where('name', 'Midterm Batch A')->where('cbt_subject_id', $subject->id)->exists())->toBeTrue();
 });
 
 test('scheduling an exam validates required fields', function () {
@@ -97,11 +100,12 @@ test('scheduling an exam validates required fields', function () {
 
     Livewire::actingAs($admin)
         ->test(CbtManagement::class)
+        ->set('examSubjectId', null)
         ->set('examName', '')
         ->set('examDate', '')
         ->set('examRoom', '')
         ->call('scheduleExam')
-        ->assertHasErrors(['examName', 'examDate', 'examRoom']);
+        ->assertHasErrors(['examSubjectId', 'examName', 'examDate', 'examRoom']);
 
     expect(CbtExam::count())->toBe(0);
 });
@@ -110,8 +114,11 @@ test('scheduling exam rejects past dates', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
 
+    $subject = CbtSubject::factory()->create();
+
     Livewire::actingAs($admin)
         ->test(CbtManagement::class)
+        ->set('examSubjectId', $subject->id)
         ->set('examName', 'Past Exam')
         ->set('examDate', now()->subDays(3)->format('Y-m-d'))
         ->set('examSession', 'Jam 08:00')
@@ -124,8 +131,11 @@ test('dismiss success hides the notification', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
 
+    $subject = CbtSubject::factory()->create();
+
     Livewire::actingAs($admin)
         ->test(CbtManagement::class)
+        ->set('examSubjectId', $subject->id)
         ->set('examName', 'Final Batch B')
         ->set('examDate', now()->addWeek()->format('Y-m-d'))
         ->set('examSession', 'Jam 11:00')
@@ -140,7 +150,9 @@ test('upcoming exams are shown on the scheduler panel', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
 
+    $subject = CbtSubject::factory()->create(['name' => 'Biologi Sel']);
     $exam = CbtExam::factory()->create([
+        'cbt_subject_id' => $subject->id,
         'name' => 'Biology Final',
         'date' => now()->addDays(2)->format('Y-m-d'),
         'session' => 'Jam 08:00',

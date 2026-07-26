@@ -17,6 +17,9 @@ class CbtManagement extends Component
     // Exam Scheduler
     // -------------------------------------------------------------------------
 
+    #[Validate('required|exists:cbt_subjects,id')]
+    public ?int $examSubjectId = null;
+
     #[Validate('required|string|max:255')]
     public string $examName = '';
 
@@ -91,6 +94,7 @@ class CbtManagement extends Component
     public function scheduleExam(): void
     {
         $validated = $this->validate([
+            'examSubjectId' => 'required|exists:cbt_subjects,id',
             'examName' => 'required|string|max:255',
             'examDate' => 'required|date|after_or_equal:today',
             'examSession' => 'required|in:Jam 08:00,Jam 11:00,Jam 14:00',
@@ -98,13 +102,14 @@ class CbtManagement extends Component
         ]);
 
         CbtExam::create([
+            'cbt_subject_id' => $validated['examSubjectId'],
             'name' => $validated['examName'],
             'date' => $validated['examDate'],
             'session' => $validated['examSession'],
             'room' => $validated['examRoom'],
         ]);
 
-        $this->reset(['examName', 'examDate', 'examRoom']);
+        $this->reset(['examSubjectId', 'examName', 'examDate', 'examRoom']);
         $this->examSession = 'Jam 08:00';
         $this->scheduledSuccess = true;
 
@@ -234,7 +239,7 @@ class CbtManagement extends Component
      */
     protected function getUpcomingExams(): Collection
     {
-        return CbtExam::orderBy('date')->orderBy('session')->take(5)->get();
+        return CbtExam::with('subject')->orderBy('date')->orderBy('session')->take(5)->get();
     }
 
     public function render(): View

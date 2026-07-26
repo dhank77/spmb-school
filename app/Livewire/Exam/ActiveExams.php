@@ -3,7 +3,6 @@
 namespace App\Livewire\Exam;
 
 use App\Models\CbtExam;
-use App\Models\CbtSubject;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -16,29 +15,63 @@ use Livewire\Component;
 class ActiveExams extends Component
 {
     /**
-     * Get active question bank subjects for exams.
+     * Get active scheduled exams currently ongoing / available today.
      *
-     * @return Collection<int, CbtSubject>
+     * @return Collection<int, CbtExam>
      */
-    protected function getActiveSubjects(): Collection
+    protected function getActiveExams(): Collection
     {
-        return CbtSubject::withCount('questions')->orderByDesc('items_count')->get();
+        $exams = CbtExam::with(['subject' => function ($query) {
+            $query->withCount('questions');
+        }])
+            ->whereDate('date', '<=', today())
+            ->whereNotNull('cbt_subject_id')
+            ->orderBy('date')
+            ->orderBy('session')
+            ->get();
+
+        if ($exams->isEmpty()) {
+            $exams = CbtExam::with(['subject' => function ($query) {
+                $query->withCount('questions');
+            }])
+                ->whereNotNull('cbt_subject_id')
+                ->orderBy('date')
+                ->take(2)
+                ->get();
+        }
+
+        return $exams;
     }
 
     /**
-     * Get upcoming exam schedules.
+     * Get upcoming exam schedules (future dates).
      *
      * @return Collection<int, CbtExam>
      */
     protected function getUpcomingExams(): Collection
     {
-        return CbtExam::orderBy('date')->orderBy('session')->take(5)->get();
+        $exams = CbtExam::with('subject')
+            ->whereDate('date', '>', today())
+            ->orderBy('date')
+            ->orderBy('session')
+            ->take(5)
+            ->get();
+
+        if ($exams->isEmpty()) {
+            $exams = CbtExam::with('subject')
+                ->orderBy('date')
+                ->orderBy('session')
+                ->take(5)
+                ->get();
+        }
+
+        return $exams;
     }
 
     public function render(): View
     {
         return view('livewire.exam.active-exams', [
-            'activeSubjects' => $this->getActiveSubjects(),
+            'activeExams' => $this->getActiveExams(),
             'upcomingExams' => $this->getUpcomingExams(),
             'user' => Auth::user(),
         ]);

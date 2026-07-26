@@ -21,7 +21,7 @@ test('authenticated student can view active exams dashboard page', function () {
     $student->assignRole('student');
 
     $subject = CbtSubject::factory()->create(['name' => 'Fisika Dasar', 'code' => 'FD']);
-    $exam = CbtExam::factory()->create(['name' => 'Ujian TPA Mandiri']);
+    $exam = CbtExam::factory()->create(['cbt_subject_id' => $subject->id, 'name' => 'Ujian TPA Mandiri']);
 
     $this->actingAs($student)
         ->get('/exam/active')
@@ -35,8 +35,8 @@ test('active exams dashboard displays subjects and schedules from database', fun
     $student = User::factory()->paid()->create();
     $student->assignRole('student');
 
-    CbtSubject::factory()->create(['name' => 'Kimia Organik']);
-    CbtExam::factory()->create(['name' => 'Jadwal Simulasi CBT']);
+    $subject = CbtSubject::factory()->create(['name' => 'Kimia Organik']);
+    CbtExam::factory()->create(['cbt_subject_id' => $subject->id, 'name' => 'Jadwal Simulasi CBT']);
 
     Livewire::actingAs($student)
         ->test(ActiveExams::class)

@@ -32,4 +32,12 @@ class CbtSubject extends Model
     {
         return $this->hasMany(CbtQuestion::class);
     }
+
+    /**
+     * @return HasMany<CbtExam, $this>
+     */
+    public function exams(): HasMany
+    {
+        return $this->hasMany(CbtExam::class, 'cbt_subject_id');
+    }
 }

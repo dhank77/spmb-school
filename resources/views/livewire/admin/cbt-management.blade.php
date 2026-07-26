@@ -264,19 +264,36 @@
         {{-- Exam Scheduling Form Section --}}
         <section class="col-span-12 xl:col-span-4" id="exam-scheduler-section">
             <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-md">
-                <h3 class="font-headline-sm text-headline-sm mb-md flex items-center gap-xs">
+                <h3 class="font-headline-sm text-headline-sm mb-md flex items-center gap-xs text-primary">
                     <span class="material-symbols-outlined text-primary">event</span>
-                    Quick Scheduler
+                    Quick Scheduler & Simpan Exam
                 </h3>
 
                 <form wire:submit="scheduleExam" class="space-y-md">
+                    {{-- Subject Selection --}}
+                    <div>
+                        <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Select Subject / Materi Ujian <span class="text-error">*</span></label>
+                        <select
+                            wire:model="examSubjectId"
+                            class="w-full bg-surface border rounded-lg px-sm py-base font-body-md text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-all {{ $errors->has('examSubjectId') ? 'border-error focus:ring-error' : 'border-outline-variant' }}"
+                        >
+                            <option value="">-- Pilih Subject / Materi --</option>
+                            @foreach($subjects as $subj)
+                                <option value="{{ $subj->id }}">{{ $subj->code }} - {{ $subj->name }} ({{ $subj->questions_count }} Soal)</option>
+                            @endforeach
+                        </select>
+                        @error('examSubjectId')
+                            <p class="mt-1 text-[11px] text-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     {{-- Exam Name --}}
                     <div>
-                        <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Exam Name</label>
+                        <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Nama Ujian / Exam Name <span class="text-error">*</span></label>
                         <input
                             wire:model="examName"
                             type="text"
-                            placeholder="e.g. Midterm Batch A"
+                            placeholder="e.g. Ujian Seleksi TPA Batch 1"
                             class="w-full bg-surface border rounded-lg px-sm py-base font-body-md text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-all {{ $errors->has('examName') ? 'border-error focus:ring-error' : 'border-outline-variant' }}"
                         />
                         @error('examName')
@@ -287,7 +304,7 @@
                     {{-- Date & Session --}}
                     <div class="grid grid-cols-2 gap-sm">
                         <div>
-                            <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Date</label>
+                            <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Tanggal Ujian <span class="text-error">*</span></label>
                             <input
                                 wire:model="examDate"
                                 type="date"
@@ -299,7 +316,7 @@
                             @enderror
                         </div>
                         <div>
-                            <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Session</label>
+                            <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Sesi Ujian</label>
                             <select
                                 wire:model="examSession"
                                 class="w-full bg-surface border rounded-lg px-sm py-base font-body-md text-body-md focus:ring-2 focus:ring-primary focus:border-primary transition-all {{ $errors->has('examSession') ? 'border-error' : 'border-outline-variant' }}"
@@ -313,7 +330,7 @@
 
                     {{-- Assigned Room --}}
                     <div>
-                        <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Assigned Room</label>
+                        <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Ruangan Ujian <span class="text-error">*</span></label>
                         <div class="grid grid-cols-2 gap-xs">
                             @foreach($rooms as $room)
                             <label class="flex items-center gap-xs p-sm border rounded-lg cursor-pointer transition-all hover:bg-surface-container-low {{ $examRoom === $room ? 'border-primary bg-primary-fixed/20' : 'border-outline-variant' }}">
@@ -333,6 +350,18 @@
                         @enderror
                     </div>
 
+                    {{-- Submit Button --}}
+                    <div class="pt-xs">
+                        <button
+                            type="submit"
+                            class="w-full flex items-center justify-center gap-xs px-md py-3 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary-container active:scale-95 transition-all shadow-md"
+                        >
+                            <span class="material-symbols-outlined text-[20px]">event_available</span>
+                            <span>Simpan Exam / Jadwalkan</span>
+                        </button>
+                    </div>
+                </form>
+
                     {{-- Upcoming Exams --}}
                     @if($upcomingExams->count() > 0)
                     <div class="pt-sm border-t border-outline-variant">
@@ -341,7 +370,12 @@
                             @foreach($upcomingExams as $exam)
                             <div class="flex items-center justify-between p-xs bg-surface-container-low rounded-lg" wire:key="exam-{{ $exam->id }}">
                                 <div>
-                                    <p class="font-label-md text-label-md text-on-surface truncate max-w-[130px]">{{ $exam->name }}</p>
+                                    <div class="flex items-center gap-1">
+                                        @if($exam->subject)
+                                            <span class="text-[9px] font-bold px-1.5 py-0.5 bg-primary/10 text-primary rounded">{{ $exam->subject->code }}</span>
+                                        @endif
+                                        <p class="font-label-md text-label-md text-on-surface truncate max-w-[120px]">{{ $exam->name }}</p>
+                                    </div>
                                     <p class="text-[10px] text-on-surface-variant">{{ \Carbon\Carbon::parse($exam->date)->format('M d') }} · {{ $exam->room }}</p>
                                 </div>
                                 <span class="text-[10px] bg-secondary-container text-on-secondary-container px-xs py-0.5 rounded font-bold">{{ explode(' ', $exam->session)[0] }}</span>

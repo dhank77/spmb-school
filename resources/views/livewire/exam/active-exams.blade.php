@@ -12,7 +12,7 @@
                     Portal Ujian & Jadwal Seleksi
                 </h1>
                 <p class="font-body-md text-body-md text-on-surface-variant max-w-xl">
-                    Pilih mata ujian aktif di bawah ini untuk memulai tes berbasis komputer (CBT). Pastikan membaca instruksi teknis sebelum memulai.
+                    Di bawah ini adalah ujian seleksi yang sedang berlangsung hari ini. Klik "Mulai Ujian" untuk mengerjakan tes berbasis komputer (CBT).
                 </p>
             </div>
             <div class="flex items-center gap-3 bg-surface-container-low p-4 rounded-2xl border border-outline-variant flex-shrink-0">
@@ -20,8 +20,8 @@
                     <span class="material-symbols-outlined text-2xl">assignment</span>
                 </div>
                 <div>
-                    <p class="font-headline-sm text-headline-sm font-bold text-primary">{{ $activeSubjects->count() }}</p>
-                    <p class="text-xs text-on-surface-variant font-medium">Ujian Siap Diikuti</p>
+                    <p class="font-headline-sm text-headline-sm font-bold text-primary">{{ $activeExams->count() }}</p>
+                    <p class="text-xs text-on-surface-variant font-medium">Ujian Sedang Berlangsung</p>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
         {{-- Left Column (Active Exams & Schedule) --}}
         <div class="lg:col-span-2 flex flex-col gap-10">
 
-            {{-- Ujian Aktif Section --}}
+            {{-- Ujian Aktif Siap Diikuti Section --}}
             <section>
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-headline-md text-headline-md flex items-center gap-4 text-primary">
@@ -41,46 +41,50 @@
                         Ujian Aktif Siap Diikuti
                     </h3>
                     <span class="px-4 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm font-bold">
-                        {{ $activeSubjects->count() }} Ujian Berlangsung
+                        {{ $activeExams->count() }} Ujian Berlangsung
                     </span>
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-6">
-                    @forelse($activeSubjects as $subj)
-                    <div class="glass-card exam-card-hover border border-outline-variant p-6 rounded-2xl flex flex-col h-full border-t-4 border-t-primary bg-white">
-                        <div class="flex justify-between items-start mb-6">
+                    @forelse($activeExams as $exam)
+                    <div class="glass-card exam-card-hover border border-outline-variant p-6 rounded-2xl flex flex-col h-full border-t-4 border-t-primary bg-white shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
                             <div class="p-2 bg-primary/10 text-primary rounded-lg font-bold text-sm">
-                                {{ $subj->code }}
+                                {{ $exam->subject ? $exam->subject->code : 'EXAM' }}
                             </div>
-                            <span class="font-label-sm text-label-sm px-2 py-0.5 bg-primary-fixed/40 text-primary font-bold rounded">
-                                {{ $subj->difficulty }}
+                            <span class="font-label-sm text-label-sm px-2.5 py-1 bg-secondary-container text-on-secondary-container font-bold rounded-full">
+                                {{ $exam->session }}
                             </span>
                         </div>
-                        <h4 class="font-headline-sm text-headline-sm mb-2">{{ $subj->name }}</h4>
-                        <p class="text-on-surface-variant text-label-md mb-6">{{ $subj->topic }}</p>
+                        <h4 class="font-headline-sm text-headline-sm font-bold mb-1">{{ $exam->name }}</h4>
+                        <p class="text-on-surface-variant text-label-md mb-4">
+                            {{ $exam->subject ? $exam->subject->name : 'Mata Ujian CBT' }} · Topik: {{ $exam->subject ? $exam->subject->topic : 'Akademik' }}
+                        </p>
 
                         <div class="mt-auto space-y-4">
-                            <div class="flex items-center gap-6 text-on-surface-variant text-label-md">
+                            <div class="flex items-center justify-between text-on-surface-variant text-label-md bg-surface-container-low p-3 rounded-xl">
                                 <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">schedule</span>
-                                    <span>60 Menit</span>
+                                    <span class="material-symbols-outlined text-sm">meeting_room</span>
+                                    <span class="font-bold">{{ $exam->room }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="material-symbols-outlined text-sm">description</span>
-                                    <span>{{ $subj->questions_count }} Soal</span>
+                                    <span class="font-bold">{{ $exam->subject ? $exam->subject->questions_count : 0 }} Soal</span>
                                 </div>
                             </div>
                             <a
-                                href="{{ route('exam.cbt', $subj) }}"
-                                class="w-full inline-block text-center bg-primary text-on-primary py-4 rounded-xl font-headline-sm text-headline-sm transition-all hover:bg-primary-container active:scale-95 shadow-md"
+                                href="{{ route('exam.cbt', $exam->cbt_subject_id) }}"
+                                class="w-full inline-block text-center bg-primary text-on-primary py-4 rounded-xl font-headline-sm text-headline-sm transition-all hover:bg-primary-container active:scale-95 shadow-md font-bold"
                             >
                                 Mulai Ujian Sekarang
                             </a>
                         </div>
                     </div>
                     @empty
-                    <div class="col-span-2 p-6 bg-surface-container-lowest border border-outline-variant rounded-2xl text-center">
-                        <p class="text-on-surface-variant font-body-md text-body-md">Belum ada ujian aktif saat ini.</p>
+                    <div class="col-span-2 p-8 bg-surface-container-lowest border border-outline-variant rounded-2xl text-center">
+                        <span class="material-symbols-outlined text-4xl text-outline mb-2">event_busy</span>
+                        <p class="text-on-surface font-bold text-headline-sm mb-1">Tidak Ada Ujian Aktif Hari Ini</p>
+                        <p class="text-on-surface-variant text-body-md">Silakan periksa jadwal ujian mendatang di tabel bawah.</p>
                     </div>
                     @endforelse
                 </div>
@@ -108,6 +112,9 @@
                             <tr class="hover:bg-surface-container transition-colors">
                                 <td class="px-6 py-6 font-label-md text-label-md font-bold">
                                     {{ $exam->name }}
+                                    @if($exam->subject)
+                                        <span class="ml-2 px-2 py-0.5 text-xs bg-primary/10 text-primary font-bold rounded">{{ $exam->subject->code }}</span>
+                                    @endif
                                     <div class="sm:hidden text-xs text-on-surface-variant font-normal mt-1">
                                         {{ \Carbon\Carbon::parse($exam->date)->format('d M Y') }} • {{ $exam->session }}
                                     </div>
