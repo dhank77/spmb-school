@@ -51,47 +51,25 @@
                         <span class="material-symbols-outlined text-secondary" data-icon="timer">timer</span>
                         Ujian Aktif
                     </h3>
-                    <span class="px-4 py-1 bg-error-container text-on-error-container rounded-full font-label-sm text-label-sm">2 Ujian Berlangsung</span>
+                    <span class="px-4 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm font-bold">
+                        {{ isset($activeSubjects) ? $activeSubjects->count() : 0 }} Ujian Berlangsung
+                    </span>
                 </div>
-                
+
                 <div class="grid md:grid-cols-2 gap-6">
-                    <!-- Exam Card 1 -->
+                    @forelse($activeSubjects ?? [] as $subj)
                     <div class="glass-card exam-card-hover border border-outline-variant p-6 rounded-2xl flex flex-col h-full border-t-4 border-t-primary bg-white">
                         <div class="flex justify-between items-start mb-6">
-                            <div class="p-2 bg-primary/10 rounded-lg">
-                                <span class="material-symbols-outlined text-primary" data-icon="psychology">psychology</span>
+                            <div class="p-2 bg-primary/10 text-primary rounded-lg font-bold text-sm">
+                                {{ $subj->code }}
                             </div>
-                            <span class="font-label-sm text-label-sm text-secondary font-bold">Wajib</span>
+                            <span class="font-label-sm text-label-sm px-2 py-0.5 bg-primary-fixed/40 text-primary font-bold rounded">
+                                {{ $subj->difficulty }}
+                            </span>
                         </div>
-                        <h4 class="font-headline-sm text-headline-sm mb-2">Tes Potensi Akademik</h4>
-                        <p class="text-on-surface-variant text-label-md mb-6">Mengukur kemampuan logika, numerik, dan verbal calon siswa.</p>
-                        
-                        <div class="mt-auto space-y-4">
-                            <div class="flex items-center gap-6 text-on-surface-variant text-label-md">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
-                                    <span>90 Menit</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm" data-icon="description">description</span>
-                                    <span>50 Soal</span>
-                                </div>
-                            </div>
-                            <button class="w-full bg-primary text-on-primary py-4 rounded-xl font-headline-sm text-headline-sm transition-all hover:bg-primary-container">Mulai Ujian</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Exam Card 2 -->
-                    <div class="glass-card exam-card-hover border border-outline-variant p-6 rounded-2xl flex flex-col h-full border-t-4 border-t-tertiary bg-white">
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="p-2 bg-tertiary/10 rounded-lg">
-                                <span class="material-symbols-outlined text-tertiary" data-icon="translate">translate</span>
-                            </div>
-                            <span class="font-label-sm text-label-sm text-tertiary font-bold">Penempatan</span>
-                        </div>
-                        <h4 class="font-headline-sm text-headline-sm mb-2">Tes Bahasa Inggris</h4>
-                        <p class="text-on-surface-variant text-label-md mb-6">Uji kompetensi bahasa untuk penempatan kelas bilingual.</p>
-                        
+                        <h4 class="font-headline-sm text-headline-sm mb-2">{{ $subj->name }}</h4>
+                        <p class="text-on-surface-variant text-label-md mb-6">{{ $subj->topic }}</p>
+
                         <div class="mt-auto space-y-4">
                             <div class="flex items-center gap-6 text-on-surface-variant text-label-md">
                                 <div class="flex items-center gap-2">
@@ -100,12 +78,19 @@
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="material-symbols-outlined text-sm" data-icon="description">description</span>
-                                    <span>40 Soal</span>
+                                    <span>{{ $subj->questions_count ?? $subj->items_count }} Soal</span>
                                 </div>
                             </div>
-                            <button class="w-full bg-primary text-on-primary py-4 rounded-xl font-headline-sm text-headline-sm transition-all hover:bg-primary-container">Mulai Ujian</button>
+                            <a href="{{ route('exam.cbt', $subj) }}" class="w-full inline-block text-center bg-primary text-on-primary py-4 rounded-xl font-headline-sm text-headline-sm transition-all hover:bg-primary-container">
+                                Mulai Ujian
+                            </a>
                         </div>
                     </div>
+                    @empty
+                    <div class="col-span-2 p-6 bg-surface-container-lowest border border-outline-variant rounded-2xl text-center">
+                        <p class="text-on-surface-variant font-body-md text-body-md">Belum ada ujian aktif saat ini.</p>
+                    </div>
+                    @endforelse
                 </div>
             </section>
             

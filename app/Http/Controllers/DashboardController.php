@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CbtSubject;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,15 +30,17 @@ class DashboardController extends Controller
             return view('admin.dashboard', compact('stats'));
         }
 
+        $activeSubjects = CbtSubject::withCount('questions')->take(4)->get();
+
         // If accessing general /dashboard route
         if ($user->hasRole('student')) {
-            return view('dashboard');
+            return view('dashboard', compact('activeSubjects'));
         }
 
         if ($user->can('access.admin_portal')) {
             return redirect()->route('admin.dashboard');
         }
 
-        return view('dashboard');
+        return view('dashboard', compact('activeSubjects'));
     }
 }

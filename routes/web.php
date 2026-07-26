@@ -9,6 +9,7 @@ use App\Livewire\Admin\CbtSubjectQuestions;
 use App\Livewire\Admin\Pipeline;
 use App\Livewire\Admin\RolePermissionSettings;
 use App\Livewire\Admission\Billing;
+use App\Livewire\Exam\CbtEngine;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
@@ -24,6 +25,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/billing/export/pdf', [BillingExportController::class, 'downloadPdf'])->name('billing.export.pdf');
     Route::get('/billing/export/excel/preview', [BillingExportController::class, 'previewExcel'])->name('billing.export.excel.preview');
     Route::get('/billing/export/excel', [BillingExportController::class, 'downloadExcel'])->name('billing.export.excel');
+
+    // CBT Exam Engine
+    Route::get('/exam/cbt/{subject?}', CbtEngine::class)->name('exam.cbt');
 
     // Admin routes
     Route::middleware(['can:access.admin_portal'])->prefix('admin')->name('admin.')->group(function () {
