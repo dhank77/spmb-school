@@ -169,20 +169,18 @@
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-surface-container-low border-b border-outline-variant">
+                        <thead class="bg-surface-container-low border-b border-outline-variant text-[11px] uppercase tracking-wider text-on-surface-variant">
                             <tr>
-                                <th class="p-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Subject</th>
-                                <th class="p-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Topic</th>
-                                <th class="p-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-center">Items</th>
-                                <th class="p-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Difficulty</th>
-                                <th class="p-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Last Modified</th>
-                                <th class="p-md text-right font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Aksi</th>
+                                <th class="py-sm px-md">Subject & Topik</th>
+                                <th class="py-sm px-sm text-center">Jumlah Soal</th>
+                                <th class="py-sm px-sm">Kesulitan</th>
+                                <th class="py-sm px-md text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-outline-variant">
                             @forelse($subjects as $subject)
                             <tr class="hover:bg-surface-container-low transition-colors group" wire:key="subject-{{ $subject->id }}">
-                                <td class="p-md">
+                                <td class="py-sm px-md">
                                     <div class="flex items-center gap-sm">
                                         @php
                                             $bgMap = [
@@ -192,28 +190,31 @@
                                             ];
                                             $bg = $bgMap[$subject->difficulty] ?? 'bg-surface-container text-on-surface-variant';
                                         @endphp
-                                        <span class="w-8 h-8 rounded {{ $bg }} flex items-center justify-center font-bold text-xs">{{ $subject->code }}</span>
-                                        <span class="font-body-md text-body-md font-semibold">{{ $subject->name }}</span>
+                                        <span class="w-7 h-7 rounded {{ $bg }} flex items-center justify-center font-bold text-xs flex-shrink-0">{{ $subject->code }}</span>
+                                        <div class="min-w-0">
+                                            <p class="font-label-md text-label-md font-semibold text-on-surface leading-tight truncate">{{ $subject->name }}</p>
+                                            <p class="text-[11px] text-on-surface-variant truncate">{{ $subject->topic }}</p>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="p-md font-body-md text-body-md text-on-surface-variant">{{ $subject->topic }}</td>
-                                <td class="p-md font-body-md text-body-md text-center">{{ number_format($subject->items_count) }}</td>
-                                <td class="p-md">
+                                <td class="py-sm px-sm text-center font-label-md text-label-md text-on-surface whitespace-nowrap">
+                                    {{ number_format($subject->items_count) }}
+                                </td>
+                                <td class="py-sm px-sm whitespace-nowrap">
                                     @if($subject->difficulty === 'Hard')
-                                        <span class="px-2 py-0.5 bg-error-container/30 text-error rounded text-[11px] font-bold">Hard</span>
+                                        <span class="px-2 py-0.5 bg-error-container/30 text-error rounded text-[10px] font-bold">Hard</span>
                                     @elseif($subject->difficulty === 'Medium')
-                                        <span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded text-[11px] font-bold">Medium</span>
+                                        <span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container rounded text-[10px] font-bold">Medium</span>
                                     @else
-                                        <span class="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed-variant rounded text-[11px] font-bold">Easy</span>
+                                        <span class="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed-variant rounded text-[10px] font-bold">Easy</span>
                                     @endif
                                 </td>
-                                <td class="p-md font-label-md text-label-md text-on-surface-variant">{{ $subject->updated_at->format('M d, Y') }}</td>
-                                <td class="p-md">
-                                    <div class="flex items-center justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                                <td class="py-sm px-md text-right whitespace-nowrap">
+                                    <div class="flex items-center justify-end gap-xs">
                                         {{-- Kelola Soal --}}
                                         <a
                                             href="{{ route('admin.cbt.subjects.questions', $subject) }}"
-                                            class="inline-flex items-center gap-xs px-xs py-0.5 bg-secondary-container text-on-secondary-container rounded text-[11px] font-bold hover:brightness-95 transition-all"
+                                            class="inline-flex items-center gap-xs px-2 py-1 bg-secondary-container text-on-secondary-container rounded text-[11px] font-bold hover:brightness-95 transition-all"
                                             title="Kelola Soal"
                                         >
                                             <span class="material-symbols-outlined text-[14px]">quiz</span>
@@ -225,24 +226,24 @@
                                             class="p-1 text-on-surface-variant hover:text-primary transition-colors"
                                             title="Edit Subject"
                                         >
-                                            <span class="material-symbols-outlined text-[20px]">edit</span>
+                                            <span class="material-symbols-outlined text-[18px]">edit</span>
                                         </button>
                                         {{-- Hapus Subject --}}
                                         <button
                                             wire:click="deleteSubject({{ $subject->id }})"
-                                            wire:confirm="Hapus subject '{{ $subject->name }}' dan semua soalnya? Tindakan ini tidak dapat dibatalkan."
+                                            wire:confirm="Hapus subject '{{ $subject->name }}' dan semua soalnya?"
                                             class="p-1 text-on-surface-variant hover:text-error transition-colors"
                                             title="Hapus Subject"
                                         >
-                                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="p-md text-center text-on-surface-variant font-body-md text-body-md">
-                                    No subjects in the question bank yet.
+                                <td colspan="4" class="py-md px-md text-center text-on-surface-variant font-body-md text-body-md">
+                                    Belum ada subject dalam question bank.
                                 </td>
                             </tr>
                             @endforelse
