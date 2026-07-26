@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PaymentController;
 use App\Livewire\Admin\CbtManagement;
+use App\Livewire\Admin\CbtSubjectQuestions;
 use App\Livewire\Admin\Pipeline;
 use App\Livewire\Admin\RolePermissionSettings;
 use App\Livewire\Admission\Billing;
@@ -29,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
         Route::get('/pipeline', Pipeline::class)->name('pipeline');
         Route::get('/cbt', CbtManagement::class)->name('cbt');
+        Route::get('/cbt/subjects/{subject}/questions', CbtSubjectQuestions::class)->name('cbt.subjects.questions');
         Route::get('/roles', RolePermissionSettings::class)->name('roles');
     });
 });

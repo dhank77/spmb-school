@@ -156,14 +156,13 @@
             <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm">
                 <div class="p-md border-b border-outline-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <h3 class="font-headline-sm text-headline-sm">Question Bank</h3>
-                    <div class="flex gap-base">
-                        <button class="flex items-center gap-xs px-sm py-base bg-secondary-container text-on-secondary-container rounded font-label-sm text-label-sm transition-all hover:brightness-95">
-                            <span class="material-symbols-outlined text-[18px]">table_chart</span>
-                            Import Excel
-                        </button>
-                        <button class="flex items-center gap-xs px-sm py-base bg-surface-container-high text-on-surface-variant rounded font-label-sm text-label-sm transition-all hover:brightness-95">
-                            <span class="material-symbols-outlined text-[18px]">description</span>
-                            Import Word
+                    <div class="flex gap-base flex-wrap">
+                        <button
+                            wire:click="openSubjectModal"
+                            class="flex items-center gap-xs px-sm py-base bg-primary text-on-primary rounded font-label-sm text-label-sm transition-all hover:brightness-95 active:scale-95"
+                        >
+                            <span class="material-symbols-outlined text-[18px]">add</span>
+                            Tambah Subject
                         </button>
                     </div>
                 </div>
@@ -177,7 +176,7 @@
                                 <th class="p-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider text-center">Items</th>
                                 <th class="p-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Difficulty</th>
                                 <th class="p-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Last Modified</th>
-                                <th class="p-md"></th>
+                                <th class="p-md text-right font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-outline-variant">
@@ -209,10 +208,35 @@
                                     @endif
                                 </td>
                                 <td class="p-md font-label-md text-label-md text-on-surface-variant">{{ $subject->updated_at->format('M d, Y') }}</td>
-                                <td class="p-md text-right">
-                                    <button class="opacity-0 group-hover:opacity-100 transition-opacity text-on-surface-variant hover:text-primary">
-                                        <span class="material-symbols-outlined">edit</span>
-                                    </button>
+                                <td class="p-md">
+                                    <div class="flex items-center justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                                        {{-- Kelola Soal --}}
+                                        <a
+                                            href="{{ route('admin.cbt.subjects.questions', $subject) }}"
+                                            class="inline-flex items-center gap-xs px-xs py-0.5 bg-secondary-container text-on-secondary-container rounded text-[11px] font-bold hover:brightness-95 transition-all"
+                                            title="Kelola Soal"
+                                        >
+                                            <span class="material-symbols-outlined text-[14px]">quiz</span>
+                                            Soal ({{ $subject->questions_count }})
+                                        </a>
+                                        {{-- Edit Subject --}}
+                                        <button
+                                            wire:click="editSubject({{ $subject->id }})"
+                                            class="p-1 text-on-surface-variant hover:text-primary transition-colors"
+                                            title="Edit Subject"
+                                        >
+                                            <span class="material-symbols-outlined text-[20px]">edit</span>
+                                        </button>
+                                        {{-- Hapus Subject --}}
+                                        <button
+                                            wire:click="deleteSubject({{ $subject->id }})"
+                                            wire:confirm="Hapus subject '{{ $subject->name }}' dan semua soalnya? Tindakan ini tidak dapat dibatalkan."
+                                            class="p-1 text-on-surface-variant hover:text-error transition-colors"
+                                            title="Hapus Subject"
+                                        >
+                                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
@@ -227,8 +251,11 @@
                 </div>
 
                 <div class="p-md border-t border-outline-variant flex justify-between items-center text-label-sm text-on-surface-variant">
-                    <span>Showing {{ $subjects->count() }} of {{ $subjects->count() }} subjects</span>
-                    <button class="text-primary font-bold hover:underline font-label-sm text-label-sm">View All Subjects</button>
+                    <span>Menampilkan {{ $subjects->count() }} subject</span>
+                    <button
+                        wire:click="openSubjectModal"
+                        class="text-primary font-bold hover:underline font-label-sm text-label-sm"
+                    >+ Tambah Subject</button>
                 </div>
             </div>
         </section>
@@ -360,6 +387,76 @@
             <a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Support</a>
         </div>
     </footer>
+
+    {{-- Subject Modal --}}
+    @if($showSubjectModal)
+    @teleport('body')
+    <div class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-md">
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl w-full max-w-[480px] overflow-hidden">
+            <div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">
+                    {{ $editingSubjectId ? 'Edit Subject' : 'Tambah Subject Baru' }}
+                </h3>
+                <button wire:click="closeSubjectModal" class="text-on-surface-variant hover:text-on-surface">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form wire:submit="saveSubject" class="p-md space-y-md">
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Kode Subject</label>
+                    <input
+                        wire:model="subjectCode"
+                        type="text"
+                        placeholder="misal: MA, SC, EN"
+                        class="w-full bg-surface border border-outline-variant rounded-lg px-sm py-base font-body-md text-body-md focus:ring-2 focus:ring-primary uppercase"
+                    />
+                    @error('subjectCode') <p class="mt-1 text-[11px] text-error">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Nama Subject</label>
+                    <input
+                        wire:model="subjectName"
+                        type="text"
+                        placeholder="misal: Mathematics"
+                        class="w-full bg-surface border border-outline-variant rounded-lg px-sm py-base font-body-md text-body-md focus:ring-2 focus:ring-primary"
+                    />
+                    @error('subjectName') <p class="mt-1 text-[11px] text-error">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Topik</label>
+                    <input
+                        wire:model="subjectTopic"
+                        type="text"
+                        placeholder="misal: Calculus & Algebra"
+                        class="w-full bg-surface border border-outline-variant rounded-lg px-sm py-base font-body-md text-body-md focus:ring-2 focus:ring-primary"
+                    />
+                    @error('subjectTopic') <p class="mt-1 text-[11px] text-error">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Tingkat Kesulitan</label>
+                    <select
+                        wire:model="subjectDifficulty"
+                        class="w-full bg-surface border border-outline-variant rounded-lg px-sm py-base font-body-md text-body-md focus:ring-2 focus:ring-primary"
+                    >
+                        @foreach($difficulties as $diff)
+                            <option value="{{ $diff }}">{{ $diff }}</option>
+                        @endforeach
+                    </select>
+                    @error('subjectDifficulty') <p class="mt-1 text-[11px] text-error">{{ $message }}</p> @enderror
+                </div>
+                <div class="flex justify-end gap-sm pt-sm border-t border-outline-variant">
+                    <button type="button" wire:click="closeSubjectModal" class="px-md py-sm border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-md py-sm bg-primary text-on-primary rounded-lg font-label-md text-label-md active:scale-95 transition-all">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endteleport
+    @endif
 
 </div>
 

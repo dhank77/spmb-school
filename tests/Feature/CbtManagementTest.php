@@ -82,7 +82,7 @@ test('admin can schedule a new exam', function () {
         ->test(CbtManagement::class)
         ->set('examName', 'Midterm Batch A')
         ->set('examDate', now()->addDays(5)->format('Y-m-d'))
-        ->set('examSession', 'Morning (08:00)')
+        ->set('examSession', 'Jam 08:00')
         ->set('examRoom', 'Lab A-01')
         ->call('scheduleExam')
         ->assertDispatched('exam-scheduled')
@@ -114,7 +114,7 @@ test('scheduling exam rejects past dates', function () {
         ->test(CbtManagement::class)
         ->set('examName', 'Past Exam')
         ->set('examDate', now()->subDays(3)->format('Y-m-d'))
-        ->set('examSession', 'Morning (08:00)')
+        ->set('examSession', 'Jam 08:00')
         ->set('examRoom', 'Lab A-01')
         ->call('scheduleExam')
         ->assertHasErrors(['examDate']);
@@ -128,7 +128,7 @@ test('dismiss success hides the notification', function () {
         ->test(CbtManagement::class)
         ->set('examName', 'Final Batch B')
         ->set('examDate', now()->addWeek()->format('Y-m-d'))
-        ->set('examSession', 'Noon (11:00)')
+        ->set('examSession', 'Jam 11:00')
         ->set('examRoom', 'Hall C')
         ->call('scheduleExam')
         ->assertSet('scheduledSuccess', true)
@@ -143,11 +143,66 @@ test('upcoming exams are shown on the scheduler panel', function () {
     $exam = CbtExam::factory()->create([
         'name' => 'Biology Final',
         'date' => now()->addDays(2)->format('Y-m-d'),
-        'session' => 'Morning (08:00)',
+        'session' => 'Jam 08:00',
         'room' => 'Lab A-02',
     ]);
 
     Livewire::actingAs($admin)
         ->test(CbtManagement::class)
         ->assertSee('Biology Final');
+});
+
+test('admin can create a new subject', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    Livewire::actingAs($admin)
+        ->test(CbtManagement::class)
+        ->call('openSubjectModal')
+        ->assertSet('showSubjectModal', true)
+        ->set('subjectCode', 'FI')
+        ->set('subjectName', 'Fisika Dasar')
+        ->set('subjectTopic', 'Kinematika')
+        ->set('subjectDifficulty', 'Hard')
+        ->call('saveSubject')
+        ->assertDispatched('subject-created')
+        ->assertSet('showSubjectModal', false);
+
+    expect(CbtSubject::where('code', 'FI')->where('name', 'Fisika Dasar')->exists())->toBeTrue();
+});
+
+test('admin can edit an existing subject', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $subject = CbtSubject::factory()->create([
+        'code' => 'MA',
+        'name' => 'Matematika Lama',
+        'topic' => 'Kalkulus',
+        'difficulty' => 'Easy',
+    ]);
+
+    Livewire::actingAs($admin)
+        ->test(CbtManagement::class)
+        ->call('editSubject', $subject->id)
+        ->assertSet('subjectName', 'Matematika Lama')
+        ->set('subjectName', 'Matematika Terapan')
+        ->call('saveSubject')
+        ->assertDispatched('subject-updated');
+
+    expect($subject->fresh()->name)->toBe('Matematika Terapan');
+});
+
+test('admin can delete a subject', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $subject = CbtSubject::factory()->create();
+
+    Livewire::actingAs($admin)
+        ->test(CbtManagement::class)
+        ->call('deleteSubject', $subject->id)
+        ->assertDispatched('subject-deleted');
+
+    expect(CbtSubject::where('id', $subject->id)->exists())->toBeFalse();
 });

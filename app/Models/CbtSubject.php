@@ -6,6 +6,7 @@ use Database\Factories\CbtSubjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -23,4 +24,12 @@ class CbtSubject extends Model
 {
     /** @use HasFactory<CbtSubjectFactory> */
     use HasFactory;
+
+    /**
+     * @return HasMany<CbtQuestion, $this>
+     */
+    public function questions(): HasMany
+    {
+        return $this->hasMany(CbtQuestion::class);
+    }
 }
