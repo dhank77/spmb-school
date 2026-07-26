@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Student billing page — accessible even before payment (PaymentRequired middleware excludes this route)
     Route::get('/billing', Billing::class)->name('billing');
     Route::get('/billing/export/pdf', [BillingExportController::class, 'downloadPdf'])->name('billing.export.pdf');
+    Route::get('/billing/export/excel/preview', [BillingExportController::class, 'previewExcel'])->name('billing.export.excel.preview');
     Route::get('/billing/export/excel', [BillingExportController::class, 'downloadExcel'])->name('billing.export.excel');
 
     // Admin routes

@@ -80,7 +80,7 @@
                             <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
                             PDF
                         </a>
-                        <a href="{{ route('billing.export.excel') }}"
+                        <a href="{{ route('billing.export.excel.preview') }}"
                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant bg-surface-container text-on-surface font-label-sm text-label-sm font-medium hover:bg-secondary-container hover:text-on-secondary-container hover:border-secondary transition-all duration-150 active:scale-95"
                         >
                             <span class="material-symbols-outlined text-[16px]">table_view</span>

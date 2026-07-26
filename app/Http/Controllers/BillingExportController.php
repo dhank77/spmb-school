@@ -9,6 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -77,6 +78,17 @@ class BillingExportController extends Controller
         $filename = 'tagihan-spmb-'.str_pad($user->id, 4, '0', STR_PAD_LEFT).'-'.date('Ymd').'.pdf';
 
         return $pdf->stream($filename);
+    }
+
+    /**
+     * Show a preview of the Excel data before downloading.
+     */
+    public function previewExcel(Request $request): View
+    {
+        $user = Auth::user();
+        ['baseFee' => $baseFee, 'uniqueCode' => $uniqueCode, 'isPaid' => $isPaid] = $this->resolveBillingData();
+
+        return view('exports.billing-excel-preview', compact('user', 'baseFee', 'uniqueCode', 'isPaid'));
     }
 
     /**
