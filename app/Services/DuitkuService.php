@@ -37,6 +37,8 @@ class DuitkuService
     {
         $merchantOrderId = 'SPMB-'.strtoupper(Str::random(8)).'-'.time();
         $totalAmount = $params['amount'] ?? 250772;
+        $baseFee = $params['baseFee'] ?? 250000;
+        $uniqueCode = $params['uniqueCode'] ?? 772;
 
         /** @var array<string, mixed> $customerDetail */
         $customerDetail = [
@@ -59,12 +61,12 @@ class DuitkuService
         $itemDetails = [
             [
                 'name' => 'Biaya Pendaftaran SPMB Hitech School',
-                'price' => 250000,
+                'price' => $baseFee,
                 'quantity' => 1,
             ],
             [
                 'name' => 'Kode Unik',
-                'price' => 772,
+                'price' => $uniqueCode,
                 'quantity' => 1,
             ],
         ];

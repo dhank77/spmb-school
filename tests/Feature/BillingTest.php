@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Admission\Billing;
+use App\Models\AdmissionWave;
 use App\Models\PaymentOrder;
 use App\Models\User;
 use App\Services\DuitkuService;
@@ -29,11 +30,29 @@ test('billing page renders invoice information', function () {
     $user = User::factory()->student()->create();
     $user->assignRole('student');
 
+    $component = Livewire::actingAs($user)
+        ->test(Billing::class);
+
+    $baseFee = $component->get('baseFee');
+    $uniqueCode = $component->get('uniqueCode');
+    $totalAmount = $baseFee + $uniqueCode;
+
+    $component->assertSee('Tagihan Pendaftaran')
+        ->assertSee(number_format($baseFee, 0, ',', '.'))
+        ->assertSee(number_format($totalAmount, 0, ',', '.'));
+});
+
+test('billing page base fee is based on the active admission wave', function () {
+    AdmissionWave::factory()->active()->create([
+        'registration_cost' => 350000,
+    ]);
+
+    $user = User::factory()->student()->create();
+    $user->assignRole('student');
+
     Livewire::actingAs($user)
         ->test(Billing::class)
-        ->assertSee('Tagihan Pendaftaran')
-        ->assertSee('250.000')
-        ->assertSee('250.772');
+        ->assertSet('baseFee', 350000);
 });
 
 test('student can select a payment method', function () {
@@ -127,4 +146,21 @@ test('admin users bypass payment gate', function () {
     $this->actingAs($admin)
         ->get(route('dashboard'))
         ->assertOk();
+});
+
+test('paid student sees actual paid amount instead of random code', function () {
+    $user = User::factory()->student()->paid()->create();
+    $user->assignRole('student');
+
+    PaymentOrder::create([
+        'user_id' => $user->id,
+        'merchant_order_id' => 'SPMB-SUCCESS-1234',
+        'amount' => 254321,
+        'status' => 'success',
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(Billing::class)
+        ->assertSet('baseFee', 250000)
+        ->assertSet('uniqueCode', 4321);
 });

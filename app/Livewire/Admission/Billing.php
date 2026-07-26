@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admission;
 
+use App\Models\AdmissionWave;
 use App\Models\PaymentOrder;
 use App\Services\DuitkuService;
 use Exception;
@@ -33,7 +34,38 @@ class Billing extends Component
 
     public int $baseFee = 250000;
 
-    public int $uniqueCode = 772;
+    public int $uniqueCode = 0;
+
+    public function mount(): void
+    {
+        $user = Auth::user();
+        if ($user && $user->isPaid()) {
+            $successfulOrder = PaymentOrder::where('user_id', $user->id)
+                ->where('status', 'success')
+                ->latest()
+                ->first();
+
+            if ($successfulOrder) {
+                $amount = $successfulOrder->amount;
+                $rem10000 = $amount % 10000;
+                if ($rem10000 >= 4000 && $rem10000 <= 4999) {
+                    $this->uniqueCode = $rem10000;
+                } else {
+                    $this->uniqueCode = $amount % 1000;
+                }
+                $this->baseFee = $amount - $this->uniqueCode;
+
+                return;
+            }
+        }
+
+        $activeWave = AdmissionWave::where('status', 'active')->first();
+        if ($activeWave) {
+            $this->baseFee = $activeWave->registration_cost;
+        }
+
+        $this->uniqueCode = rand(4000, 4999);
+    }
 
     public function selectMethod(string $method): void
     {
@@ -74,6 +106,8 @@ class Billing extends Component
             $order = $duitku->createInvoice($user, [
                 'amount' => $this->totalAmount(),
                 'paymentMethod' => $duitkuMethod,
+                'baseFee' => $this->baseFee,
+                'uniqueCode' => $this->uniqueCode,
             ]);
 
             if ($order->reference) {

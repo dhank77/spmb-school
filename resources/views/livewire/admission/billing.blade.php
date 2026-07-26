@@ -14,7 +14,15 @@
     </div>
     @endif
 
-    {{-- Warning Banner --}}
+    {{-- Warning / Success Banner --}}
+    @if(Auth::user()->isPaid())
+    <div class="mb-8 p-4 rounded-xl flex items-start gap-4 border" style="background-color: #e8f5e9; color: #1b5e20; border-color: #c8e6c9;">
+        <span class="material-symbols-outlined flex-shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1; color: #2e7d32;">check_circle</span>
+        <p class="font-body-md text-body-md font-medium">
+            Pembayaran Anda telah berhasil diverifikasi. Anda sekarang memiliki akses penuh ke portal calon murid.
+        </p>
+    </div>
+    @else
     <div class="mb-8 bg-error-container text-on-error-container p-4 rounded-xl flex items-start gap-4">
         <span class="material-symbols-outlined flex-shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">warning</span>
         <p class="font-body-md text-body-md font-medium">
@@ -22,6 +30,7 @@
             Semua fitur lain dikunci hingga pembayaran selesai.
         </p>
     </div>
+    @endif
 
     <div class="flex flex-col lg:flex-row gap-8">
 
@@ -50,9 +59,15 @@
                             </p>
                             @endif
                         </div>
+                        @if(Auth::user()->isPaid())
+                        <span class="bg-success text-white px-4 py-1.5 rounded-full font-label-sm text-label-sm tracking-wide uppercase font-bold flex-shrink-0" style="background-color: #2e7d32;">
+                            LUNAS
+                        </span>
+                        @else
                         <span class="bg-error text-on-error px-4 py-1.5 rounded-full font-label-sm text-label-sm tracking-wide uppercase font-bold flex-shrink-0">
                             BELUM BAYAR
                         </span>
+                        @endif
                     </div>
                 </div>
 
@@ -71,7 +86,7 @@
                 </div>
 
                 {{-- Billing Table --}}
-                <div class="p-6 md:p-8 border-b border-outline-variant">
+                <div class="p-6 md:p-8">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
@@ -105,19 +120,36 @@
                                 </tr>
                             </tbody>
                             <tfoot>
+                                @if(Auth::user()->isPaid())
+                                <tr class="bg-success-container text-on-success-container" style="background-color: #e8f5e9; color: #1b5e20;">
+                                    <td class="py-4 px-4 rounded-l-xl font-bold">Status Pembayaran</td>
+                                    <td class="py-4 px-4 text-right rounded-r-xl font-bold text-headline-sm">
+                                        LUNAS ({{ Auth::user()->payment_method }})
+                                    </td>
+                                </tr>
+                                @else
                                 <tr class="bg-primary-container text-on-primary-container">
                                     <td class="py-4 px-4 rounded-l-xl font-bold">Total Pembayaran</td>
                                     <td class="py-4 px-4 text-right rounded-r-xl font-bold text-headline-sm">
                                         Rp {{ number_format($this->totalAmount(), 0, ',', '.') }}
                                     </td>
                                 </tr>
+                                @endif
                             </tfoot>
                         </table>
                     </div>
                 </div>
 
-                {{-- Payment Methods --}}
-                <div class="p-6 md:p-8">
+            </div>
+        </div>
+
+        {{-- Sidebar --}}
+        <div class="lg:w-1/3">
+            <div class="sticky top-24 space-y-6">
+
+                {{-- Payment Methods Card (Moved above Summary Card) --}}
+                @if(!Auth::user()->isPaid())
+                <div x-data="{ vaOpen: true, qrisOpen: true }" class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant shadow-sm transition-all duration-200">
                     <h2 class="font-headline-sm text-headline-sm text-on-surface mb-6">Pilih Metode Pembayaran</h2>
 
                     @error('selectedMethod')
@@ -127,15 +159,25 @@
                         </div>
                     @enderror
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
+                    <div class="space-y-4">
                         {{-- Virtual Account --}}
-                        <div class="p-4 rounded-xl border border-outline-variant bg-surface-container-lowest">
-                            <div class="flex items-center gap-2 mb-4">
-                                <span class="material-symbols-outlined text-primary">account_balance</span>
-                                <h3 class="font-label-md text-label-md font-bold text-primary uppercase">Virtual Account</h3>
-                            </div>
-                            <div class="space-y-3">
+                        <div>
+                            <button @click="vaOpen = !vaOpen" type="button" class="w-full flex items-center justify-between mb-3 text-left focus:outline-none select-none cursor-pointer">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">account_balance</span>
+                                    <h3 class="font-label-md text-label-md font-bold text-primary uppercase">Virtual Account</h3>
+                                </div>
+                                <span class="material-symbols-outlined transition-transform duration-200 text-on-surface-variant" :class="vaOpen ? 'rotate-180' : ''">expand_more</span>
+                            </button>
+                            <div x-show="vaOpen"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                                 x-transition:leave-end="opacity-0 transform -translate-y-2"
+                                 class="space-y-2"
+                            >
                                 @foreach(['MANDIRI' => 'Bank Mandiri', 'BNI' => 'Bank BNI', 'BCA' => 'Bank BCA'] as $code => $label)
                                 <button
                                     type="button"
@@ -150,7 +192,7 @@
                                         <div class="w-12 h-7 bg-surface-container rounded flex items-center justify-center font-bold text-[10px] text-on-surface-variant border border-outline-variant">
                                             {{ $code }}
                                         </div>
-                                        <span class="font-body-md text-body-md">{{ $label }}</span>
+                                        <span class="font-body-md text-body-md text-left">{{ $label }}</span>
                                     </div>
                                     <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0
                                         {{ $selectedMethod === $code ? 'border-primary' : 'border-outline' }}">
@@ -164,12 +206,23 @@
                         </div>
 
                         {{-- E-Wallet & QRIS --}}
-                        <div class="p-4 rounded-xl border border-outline-variant bg-surface-container-lowest">
-                            <div class="flex items-center gap-2 mb-4">
-                                <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
-                                <h3 class="font-label-md text-label-md font-bold text-primary uppercase">E-Wallet &amp; QRIS</h3>
-                            </div>
-                            <div class="space-y-3">
+                        <div class="pt-3 border-t border-outline-variant">
+                            <button @click="qrisOpen = !qrisOpen" type="button" class="w-full flex items-center justify-between mb-3 text-left focus:outline-none select-none cursor-pointer">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">account_balance_wallet</span>
+                                    <h3 class="font-label-md text-label-md font-bold text-primary uppercase">E-Wallet &amp; QRIS</h3>
+                                </div>
+                                <span class="material-symbols-outlined transition-transform duration-200 text-on-surface-variant" :class="qrisOpen ? 'rotate-180' : ''">expand_more</span>
+                            </button>
+                            <div x-show="qrisOpen"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                                 x-transition:leave-end="opacity-0 transform -translate-y-2"
+                                 class="space-y-2"
+                            >
                                 @foreach(['QRIS' => 'QRIS', 'GOPAY' => 'GoPay'] as $code => $label)
                                 <button
                                     type="button"
@@ -184,7 +237,7 @@
                                         <div class="w-12 h-7 bg-surface-container rounded flex items-center justify-center font-bold text-[10px] text-on-surface-variant border border-outline-variant">
                                             {{ $code }}
                                         </div>
-                                        <span class="font-body-md text-body-md">{{ $label }}</span>
+                                        <span class="font-body-md text-body-md text-left">{{ $label }}</span>
                                     </div>
                                     <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0
                                         {{ $selectedMethod === $code ? 'border-primary' : 'border-outline' }}">
@@ -196,28 +249,21 @@
                                 @endforeach
                             </div>
                         </div>
-
                     </div>
                 </div>
-
-            </div>
-        </div>
-
-        {{-- Sidebar --}}
-        <div class="lg:w-1/3">
-            <div class="sticky top-24 space-y-6">
+                @endif
 
                 {{-- Summary Card --}}
                 <div class="bg-surface-container p-6 rounded-2xl border border-outline-variant"
                      style="box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);">
-                    <h3 class="font-headline-sm text-headline-sm mb-6">Rangkuman Tagihan</h3>
+                    <h3 class="font-headline-sm text-headline-sm mb-6">Rangkuman {{ Auth::user()->isPaid() ? 'Pembayaran' : 'Tagihan' }}</h3>
                     <div class="space-y-3 mb-6">
                         <div class="flex justify-between font-body-md">
                             <span class="text-on-surface-variant">Biaya Pendaftaran</span>
                             <span>Rp {{ number_format($this->baseFee, 0, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between font-body-md">
-                            <span class="text-on-surface-variant">Kode Unik</span>
+                            <span class="text-on-surface-variant">Kode Unik & Fee</span>
                             <span>Rp {{ number_format($this->uniqueCode, 0, ',', '.') }}</span>
                         </div>
                         <div class="pt-3 border-t border-outline-variant flex justify-between font-bold text-primary">
@@ -226,42 +272,60 @@
                         </div>
                     </div>
 
-                    @if($selectedMethod)
-                    <div class="mb-4 flex items-center gap-3 bg-secondary-container/30 text-on-secondary-container px-4 py-3 rounded-xl">
-                        <span class="material-symbols-outlined text-sm text-secondary">check_circle</span>
+                    @if(Auth::user()->isPaid())
+                    <div class="mb-4 flex items-center gap-3 bg-success-container text-on-success-container px-4 py-3 rounded-xl" style="background-color: #e8f5e9; color: #1b5e20;">
+                        <span class="material-symbols-outlined text-sm text-success" style="color: #2e7d32;">check_circle</span>
                         <span class="font-label-md text-label-md">
-                            Metode: <strong>{{ $paymentMethods[$selectedMethod]['label'] ?? $selectedMethod }}</strong>
+                            Pembayaran Lunas menggunakan <strong>{{ Auth::user()->payment_method }}</strong>
                         </span>
                     </div>
-                    @endif
 
-                    @if($processingError)
-                    <div class="mb-4 flex items-start gap-3 bg-error-container text-on-error-container px-4 py-3 rounded-xl">
-                        <span class="material-symbols-outlined text-sm flex-shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">error</span>
-                        <span class="font-label-md text-label-md">{{ $processingErrorMessage }}</span>
-                    </div>
-                    @endif
-
-                    <button
-                        wire:click="payNow"
-                        wire:loading.attr="disabled"
-                        wire:target="payNow"
-                        id="bayar-sekarang-btn"
-                        class="w-full flex items-center justify-center gap-2 bg-secondary-container text-on-secondary-container py-4 rounded-xl font-bold text-body-lg hover:brightness-95 active:scale-95 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                    <a
+                        href="{{ route('dashboard') }}"
+                        class="w-full flex items-center justify-center gap-2 bg-primary text-on-primary py-4 rounded-xl font-bold text-body-lg hover:brightness-95 active:scale-95 transition-all shadow-md text-center"
+                        style="color: white; background-color: var(--color-primary, #6750a4);"
                     >
-                        <span wire:loading.remove wire:target="payNow" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
-                        <span wire:loading.remove wire:target="payNow">Lanjut ke Halaman Pembayaran</span>
-                        <span wire:loading wire:target="payNow" class="flex items-center gap-2">
-                            <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Menghubungkan ke Duitku...
-                        </span>
-                    </button>
-                    <p class="mt-4 text-center font-label-sm text-label-sm text-on-surface-variant px-2">
-                        Anda akan diarahkan ke halaman pembayaran Duitku yang aman.
-                    </p>
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span>Ke Dashboard Utama</span>
+                    </a>
+                    @else
+                        @if($selectedMethod)
+                        <div class="mb-4 flex items-center gap-3 bg-secondary-container/30 text-on-secondary-container px-4 py-3 rounded-xl">
+                            <span class="material-symbols-outlined text-sm text-secondary">check_circle</span>
+                            <span class="font-label-md text-label-md">
+                                Metode: <strong>{{ $paymentMethods[$selectedMethod]['label'] ?? $selectedMethod }}</strong>
+                            </span>
+                        </div>
+                        @endif
+
+                        @if($processingError)
+                        <div class="mb-4 flex items-start gap-3 bg-error-container text-on-error-container px-4 py-3 rounded-xl">
+                            <span class="material-symbols-outlined text-sm flex-shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">error</span>
+                            <span class="font-label-md text-label-md">{{ $processingErrorMessage }}</span>
+                        </div>
+                        @endif
+
+                        <button
+                            wire:click="payNow"
+                            wire:loading.attr="disabled"
+                            wire:target="payNow"
+                            id="bayar-sekarang-btn"
+                            class="w-full flex items-center justify-center gap-2 bg-secondary-container text-on-secondary-container py-4 rounded-xl font-bold text-body-lg hover:brightness-95 active:scale-95 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <span wire:loading.remove wire:target="payNow" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+                            <span wire:loading.remove wire:target="payNow">Lanjut ke Halaman Pembayaran</span>
+                            <span wire:loading wire:target="payNow" class="flex items-center gap-2">
+                                <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Menghubungkan ke Duitku...
+                            </span>
+                        </button>
+                        <p class="mt-4 text-center font-label-sm text-label-sm text-on-surface-variant px-2">
+                            Anda akan diarahkan ke halaman pembayaran Duitku yang aman.
+                        </p>
+                    @endif
                 </div>
 
                 {{-- Help Card --}}
