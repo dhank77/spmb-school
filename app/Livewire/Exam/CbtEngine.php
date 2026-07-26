@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Exam;
 
+use App\Models\CbtExamResult;
 use App\Models\CbtQuestion;
 use App\Models\CbtSubject;
 use Illuminate\Support\Facades\Auth;
@@ -73,6 +74,18 @@ class CbtEngine extends Component
                     'points' => $q->points,
                 ])->toArray();
             }
+
+            // Check if student has ALREADY submitted/completed this exam
+            $existingResult = CbtExamResult::where('user_id', Auth::id())
+                ->where('cbt_subject_id', $this->subject->id)
+                ->first();
+
+            if ($existingResult) {
+                $this->isSubmitted = true;
+                $this->finalScore = $existingResult->score;
+                $this->totalPoints = $existingResult->total_points;
+                $this->correctCount = $existingResult->correct_count;
+            }
         }
 
         // Initialize empty flagged array
@@ -103,6 +116,10 @@ class CbtEngine extends Component
 
     public function toggleFlag(): void
     {
+        if ($this->isSubmitted) {
+            return;
+        }
+
         $this->flagged[$this->currentIndex] = ! ($this->flagged[$this->currentIndex] ?? false);
     }
 
@@ -144,6 +161,24 @@ class CbtEngine extends Component
                 $this->correctCount++;
                 $this->finalScore += $q['points'];
             }
+        }
+
+        // Save result to Database so student cannot retake the exam
+        if ($this->subject && Auth::check()) {
+            CbtExamResult::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'cbt_subject_id' => $this->subject->id,
+                ],
+                [
+                    'score' => $this->finalScore,
+                    'total_points' => $this->totalPoints,
+                    'correct_count' => $this->correctCount,
+                    'total_questions' => count($this->questionsList),
+                    'status' => 'completed',
+                    'completed_at' => now(),
+                ]
+            );
         }
     }
 

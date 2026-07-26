@@ -3,6 +3,7 @@
 namespace App\Livewire\Exam;
 
 use App\Models\CbtExam;
+use App\Models\CbtExamResult;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -68,11 +69,29 @@ class ActiveExams extends Component
         return $exams;
     }
 
+    /**
+     * Get completed exam results for the authenticated student.
+     *
+     * @return Collection<int, CbtExamResult>
+     */
+    protected function getCompletedResults(): Collection
+    {
+        return CbtExamResult::where('user_id', Auth::id())
+            ->with('subject')
+            ->orderByDesc('completed_at')
+            ->get();
+    }
+
     public function render(): View
     {
+        $completedResults = $this->getCompletedResults();
+        $completedSubjectIds = $completedResults->pluck('cbt_subject_id')->toArray();
+
         return view('livewire.exam.active-exams', [
             'activeExams' => $this->getActiveExams(),
             'upcomingExams' => $this->getUpcomingExams(),
+            'completedResults' => $completedResults,
+            'completedSubjectIds' => $completedSubjectIds,
             'user' => Auth::user(),
         ]);
     }

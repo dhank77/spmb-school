@@ -42,17 +42,17 @@
                     <h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Ujian Selesai!</h2>
                     <p class="font-body-md text-body-md text-on-surface-variant mb-lg">Jawaban Anda telah berhasil dikirim dan tersimpan di sistem.</p>
 
-                    <div class="grid grid-cols-3 gap-md max-w-md mx-auto mb-xl p-md bg-surface-container-low rounded-xl border border-outline-variant">
-                        <div>
-                            <p class="text-[11px] text-on-surface-variant font-bold uppercase">Terjawab</p>
-                            <p class="font-headline-md text-headline-md text-primary font-black">{{ count($answers) }}/{{ $totalQuestionsCount }}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[540px] w-full mx-auto my-6 p-6 bg-surface-container-low rounded-2xl border border-outline-variant shadow-sm">
+                        <div class="p-3 bg-white rounded-xl border border-outline-variant/60">
+                            <p class="text-[11px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Terjawab</p>
+                            <p class="font-headline-md text-headline-md text-primary font-black">{{ count($answers) > 0 ? count($answers) : $totalQuestionsCount }}/{{ $totalQuestionsCount }}</p>
                         </div>
-                        <div>
-                            <p class="text-[11px] text-on-surface-variant font-bold uppercase">Benar</p>
+                        <div class="p-3 bg-white rounded-xl border border-outline-variant/60">
+                            <p class="text-[11px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Benar</p>
                             <p class="font-headline-md text-headline-md text-secondary font-black">{{ $correctCount }}/{{ $totalQuestionsCount }}</p>
                         </div>
-                        <div>
-                            <p class="text-[11px] text-on-surface-variant font-bold uppercase">Skor Total</p>
+                        <div class="p-3 bg-white rounded-xl border border-outline-variant/60">
+                            <p class="text-[11px] text-on-surface-variant font-bold uppercase tracking-wider mb-1">Skor Total</p>
                             <p class="font-headline-md text-headline-md text-primary font-black">{{ $finalScore }}</p>
                         </div>
                     </div>

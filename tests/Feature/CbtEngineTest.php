@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Exam\CbtEngine;
+use App\Models\CbtExamResult;
 use App\Models\CbtQuestion;
 use App\Models\CbtSubject;
 use App\Models\User;
@@ -116,5 +117,32 @@ test('user can submit exam and calculate final score', function () {
         ->assertSet('isSubmitted', true)
         ->assertSet('correctCount', 2)
         ->assertSet('finalScore', 5)
+        ->assertSee('Ujian Selesai!');
+
+    expect(CbtExamResult::where('user_id', $student->id)->where('cbt_subject_id', $subject->id)->exists())->toBeTrue();
+});
+
+test('completing exam saves result to database and prevents retaking exam', function () {
+    $student = User::factory()->paid()->create();
+    $student->assignRole('student');
+
+    $subject = CbtSubject::factory()->create(['name' => 'Pemrograman']);
+    CbtQuestion::factory()->create(['cbt_subject_id' => $subject->id, 'correct_answer' => 'A', 'points' => 10]);
+
+    // First completion
+    Livewire::actingAs($student)
+        ->test(CbtEngine::class, ['subject' => $subject])
+        ->call('selectOption', 'A')
+        ->call('finishExam');
+
+    $result = CbtExamResult::where('user_id', $student->id)->where('cbt_subject_id', $subject->id)->first();
+    expect($result)->not->toBeNull();
+    expect($result->score)->toBe(10);
+
+    // Re-visiting exam engine should automatically block retake and show finished view
+    Livewire::actingAs($student)
+        ->test(CbtEngine::class, ['subject' => $subject])
+        ->assertSet('isSubmitted', true)
+        ->assertSet('finalScore', 10)
         ->assertSee('Ujian Selesai!');
 });

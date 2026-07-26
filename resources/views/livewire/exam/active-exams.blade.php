@@ -11,7 +11,7 @@
                 <h1 class="font-headline-md text-headline-md md:text-display-lg-mobile font-bold text-on-surface mb-2">
                     Portal Ujian & Jadwal Seleksi
                 </h1>
-                <p class="font-body-md text-body-md text-on-surface-variant max-w-xl">
+                <p class="font-body-md text-body-md text-on-surface-variant">
                     Di bawah ini adalah ujian seleksi yang sedang berlangsung hari ini. Klik "Mulai Ujian" untuk mengerjakan tes berbasis komputer (CBT).
                 </p>
             </div>
@@ -47,14 +47,23 @@
 
                 <div class="grid md:grid-cols-2 gap-6">
                     @forelse($activeExams as $exam)
-                    <div class="glass-card exam-card-hover border border-outline-variant p-6 rounded-2xl flex flex-col h-full border-t-4 border-t-primary bg-white shadow-sm">
+                    @php
+                        $isCompleted = in_array($exam->cbt_subject_id, $completedSubjectIds);
+                    @endphp
+                    <div class="glass-card exam-card-hover border border-outline-variant p-6 rounded-2xl flex flex-col h-full border-t-4 {{ $isCompleted ? 'border-t-secondary bg-surface-container-low/40' : 'border-t-primary bg-white' }} shadow-sm">
                         <div class="flex justify-between items-start mb-4">
                             <div class="p-2 bg-primary/10 text-primary rounded-lg font-bold text-sm">
                                 {{ $exam->subject ? $exam->subject->code : 'EXAM' }}
                             </div>
-                            <span class="font-label-sm text-label-sm px-2.5 py-1 bg-secondary-container text-on-secondary-container font-bold rounded-full">
-                                {{ $exam->session }}
-                            </span>
+                            @if($isCompleted)
+                                <span class="font-label-sm text-label-sm px-2.5 py-1 bg-secondary-container text-on-secondary-container font-bold rounded-full flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-xs">check_circle</span> SUDAH DIKERJAKAN
+                                </span>
+                            @else
+                                <span class="font-label-sm text-label-sm px-2.5 py-1 bg-primary-fixed/40 text-primary font-bold rounded-full">
+                                    {{ $exam->session }}
+                                </span>
+                            @endif
                         </div>
                         <h4 class="font-headline-sm text-headline-sm font-bold mb-1">{{ $exam->name }}</h4>
                         <p class="text-on-surface-variant text-label-md mb-4">
@@ -72,12 +81,21 @@
                                     <span class="font-bold">{{ $exam->subject ? $exam->subject->questions_count : 0 }} Soal</span>
                                 </div>
                             </div>
-                            <a
-                                href="{{ route('exam.cbt', $exam->cbt_subject_id) }}"
-                                class="w-full inline-block text-center bg-primary text-on-primary py-4 rounded-xl font-headline-sm text-headline-sm transition-all hover:bg-primary-container active:scale-95 shadow-md font-bold"
-                            >
-                                Mulai Ujian Sekarang
-                            </a>
+                            @if($isCompleted)
+                                <a
+                                    href="{{ route('exam.cbt', $exam->cbt_subject_id) }}"
+                                    class="w-full inline-block text-center bg-surface-container-high text-on-surface-variant py-4 rounded-xl font-headline-sm text-headline-sm transition-all hover:bg-surface-container-highest shadow-sm font-bold"
+                                >
+                                    Lihat Hasil Ujian
+                                </a>
+                            @else
+                                <a
+                                    href="{{ route('exam.cbt', $exam->cbt_subject_id) }}"
+                                    class="w-full inline-block text-center bg-primary text-on-primary py-4 rounded-xl font-headline-sm text-headline-sm transition-all hover:bg-primary-container active:scale-95 shadow-md font-bold"
+                                >
+                                    Mulai Ujian Sekarang
+                                </a>
+                            @endif
                         </div>
                     </div>
                     @empty
@@ -151,27 +169,22 @@
                 </h3>
 
                 <div class="grid md:grid-cols-2 gap-6">
+                    @forelse($completedResults as $res)
                     <div class="p-6 rounded-2xl border border-outline-variant bg-surface-container-lowest flex items-center gap-6 shadow-sm">
-                        <div class="w-12 h-12 flex-shrink-0 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center">
-                            <span class="material-symbols-outlined">task_alt</span>
+                        <div class="w-12 h-12 flex-shrink-0 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center font-bold">
+                            <span class="material-symbols-outlined text-2xl">task_alt</span>
                         </div>
-                        <div>
-                            <h5 class="font-label-md text-label-md font-bold">Ujian Dasar Matematika</h5>
-                            <p class="text-label-sm text-secondary font-bold">Selesai - Lulus</p>
-                            <p class="text-xs text-outline mt-1">Diselesaikan pada {{ date('d M Y') }}</p>
-                        </div>
-                    </div>
-
-                    <div class="p-6 rounded-2xl border border-outline-variant bg-surface-container-lowest flex items-center gap-6 shadow-sm opacity-75">
-                        <div class="w-12 h-12 flex-shrink-0 bg-surface-container-high text-on-surface-variant rounded-full flex items-center justify-center">
-                            <span class="material-symbols-outlined">pending</span>
-                        </div>
-                        <div>
-                            <h5 class="font-label-md text-label-md font-bold">Tes Karakter Pribadi</h5>
-                            <p class="text-label-sm text-on-surface-variant font-bold">Selesai - Menunggu Hasil</p>
-                            <p class="text-xs text-outline mt-1">Diselesaikan pada {{ date('d M Y') }}</p>
+                        <div class="flex-grow">
+                            <h5 class="font-label-md text-label-md font-bold">{{ $res->subject ? $res->subject->name : 'Ujian CBT' }}</h5>
+                            <p class="text-label-sm text-secondary font-bold">Selesai - Skor: {{ $res->score }}/{{ $res->total_points }} ({{ $res->correct_count }}/{{ $res->total_questions }} Benar)</p>
+                            <p class="text-xs text-outline mt-1">Diselesaikan pada {{ \Carbon\Carbon::parse($res->completed_at)->format('d M Y, H:i') }}</p>
                         </div>
                     </div>
+                    @empty
+                    <div class="col-span-2 p-6 rounded-2xl border border-outline-variant bg-surface-container-lowest text-center">
+                        <p class="text-on-surface-variant font-body-md text-body-md">Belum ada riwayat ujian yang diselesaikan.</p>
+                    </div>
+                    @endforelse
                 </div>
             </section>
 
