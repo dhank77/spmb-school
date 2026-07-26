@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             AdmissionWaveSeeder::class,
             FaqSeeder::class,
             StudentApplicantSeeder::class,
+            CbtSubjectSeeder::class,
         ]);
     }
 }

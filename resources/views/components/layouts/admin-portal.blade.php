@@ -63,8 +63,8 @@
             </a>
             @endcan
             @canany(['cbt.create', 'cbt.monitor', 'cbt.grade'])
-            <a class="flex items-center gap-sm p-sm text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg font-label-md text-label-md group" href="#">
-                <span class="material-symbols-outlined text-primary">quiz</span>
+            <a class="flex items-center gap-sm p-sm {{ request()->routeIs('admin.cbt') ? 'bg-secondary-container text-on-secondary-container rounded-lg font-bold' : 'text-on-surface-variant hover:bg-surface-container-high transition-all rounded-lg' }} font-label-md text-label-md" href="{{ route('admin.cbt') }}">
+                <span class="material-symbols-outlined text-primary" @if(request()->routeIs('admin.cbt')) style="font-variation-settings: 'FILL' 1;" @endif>quiz</span>
                 <span>CBT Management</span>
             </a>
             @endcanany
