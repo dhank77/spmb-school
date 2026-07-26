@@ -76,7 +76,7 @@
                 <span class="text-[9px] font-bold bg-error text-on-error px-1.5 py-0.5 rounded-full">UNPAID</span>
                 @endif
             </a>
-            <a class="flex items-center gap-6 px-6 py-4 {{ request()->routeIs('exam.cbt*') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="{{ route('exam.cbt') }}">
+            <a class="flex items-center gap-6 px-6 py-4 {{ request()->routeIs('exam.*') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-surface-variant hover:bg-surface-container-high' }} rounded-lg font-label-md text-label-md transition-transform duration-200 hover:translate-x-1" href="{{ route('exam.active') }}">
                 <span class="material-symbols-outlined" data-icon="assignment">assignment</span>
                 <span>Ujian Aktif</span>
             </a>
@@ -155,7 +155,7 @@
             @endif
             <span class="text-xs">Tagihan</span>
         </a>
-        <a href="{{ route('exam.cbt') }}" class="flex flex-col items-center gap-1 {{ request()->routeIs('exam.cbt*') ? 'text-primary font-bold' : 'text-on-surface-variant' }}">
+        <a href="{{ route('exam.active') }}" class="flex flex-col items-center gap-1 {{ request()->routeIs('exam.*') ? 'text-primary font-bold' : 'text-on-surface-variant' }}">
             <span class="material-symbols-outlined" data-icon="assignment">assignment</span>
             <span class="text-xs">Ujian</span>
         </a>

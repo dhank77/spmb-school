@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CbtExam;
 use App\Models\CbtSubject;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -31,16 +32,17 @@ class DashboardController extends Controller
         }
 
         $activeSubjects = CbtSubject::withCount('questions')->take(4)->get();
+        $upcomingExams = CbtExam::orderBy('date')->orderBy('session')->take(5)->get();
 
         // If accessing general /dashboard route
         if ($user->hasRole('student')) {
-            return view('dashboard', compact('activeSubjects'));
+            return view('dashboard', compact('activeSubjects', 'upcomingExams'));
         }
 
         if ($user->can('access.admin_portal')) {
             return redirect()->route('admin.dashboard');
         }
 
-        return view('dashboard', compact('activeSubjects'));
+        return view('dashboard', compact('activeSubjects', 'upcomingExams'));
     }
 }

@@ -9,12 +9,13 @@
         <p class="font-body-md text-body-md font-medium">Pembayaran berhasil! Selamat datang di portal calon murid Hitech School.</p>
     </div>
     @endif
-    <!-- Hero Welcome Section -->
-    <section class="mb-16 relative overflow-hidden rounded-3xl bg-primary px-6 py-10 md:px-16 text-on-primary shadow-lg">
+
+    {{-- Hero Welcome Section --}}
+    <section class="mb-10 relative overflow-hidden rounded-3xl bg-primary px-6 py-10 md:px-16 text-on-primary shadow-lg">
         <div class="relative z-10 grid md:grid-cols-2 items-center gap-10">
             <div>
                 <div class="inline-flex items-center gap-2 px-4 py-1 bg-on-primary-container text-primary rounded-full mb-4">
-                    <span class="material-symbols-outlined text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
                     <span class="font-label-sm text-label-sm">Akun Terverifikasi</span>
                 </div>
                 <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg mb-2">Selamat Datang, {{ Auth::user()->name }}!</h1>
@@ -34,189 +35,184 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Abstract Background Shapes -->
+
+        {{-- Background shapes --}}
         <div class="absolute top-0 right-0 w-64 h-64 bg-secondary/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
         <div class="absolute bottom-0 left-0 w-48 h-48 bg-tertiary/30 rounded-full blur-3xl -ml-20 -mb-20"></div>
     </section>
 
+    {{-- Status & Quick Action Cards Row --}}
+    <div class="grid md:grid-cols-3 gap-6 mb-10">
+        {{-- Card 1: Status Pembayaran --}}
+        <div class="p-6 bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-secondary-container/50 text-secondary rounded-xl">
+                        <span class="material-symbols-outlined">receipt_long</span>
+                    </div>
+                    @if(Auth::user()->isPaid())
+                        <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">LUNAS</span>
+                    @else
+                        <span class="px-3 py-1 bg-error-container text-on-error-container rounded-full text-xs font-bold">BELUM BAYAR</span>
+                    @endif
+                </div>
+                <h4 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-1">Tagihan Pendaftaran</h4>
+                <p class="text-on-surface-variant text-label-md">Biaya pendaftaran seleksi masuk SPMB {{ date('Y') }}.</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-outline-variant">
+                <a href="{{ route('billing') }}" class="w-full inline-flex items-center justify-center gap-2 py-3 bg-secondary text-on-secondary font-bold rounded-xl hover:opacity-90 transition-all">
+                    <span>Lihat Tagihan</span>
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </a>
+            </div>
+        </div>
+
+        {{-- Card 2: Status Ujian Aktif --}}
+        <div class="p-6 bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-primary/10 text-primary rounded-xl">
+                        <span class="material-symbols-outlined">timer</span>
+                    </div>
+                    <span class="px-3 py-1 bg-primary-fixed/40 text-primary rounded-full text-xs font-bold">
+                        {{ isset($activeSubjects) ? $activeSubjects->count() : 0 }} UJIAN READY
+                    </span>
+                </div>
+                <h4 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-1">Portal Ujian CBT</h4>
+                <p class="text-on-surface-variant text-label-md">Ujian potensi akademik & tes penempatan bahasa.</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-outline-variant">
+                <a href="{{ route('exam.active') }}" class="w-full inline-flex items-center justify-center gap-2 py-3 bg-primary text-on-primary font-bold rounded-xl hover:bg-primary-container transition-all">
+                    <span>Buka Portal Ujian</span>
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </a>
+            </div>
+        </div>
+
+        {{-- Card 3: Verifikasi Berkas --}}
+        <div class="p-6 bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-tertiary-container/50 text-tertiary rounded-xl">
+                        <span class="material-symbols-outlined">folder_managed</span>
+                    </div>
+                    <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">VERIFIED</span>
+                </div>
+                <h4 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-1">Status Berkas</h4>
+                <p class="text-on-surface-variant text-label-md">Dokumen pendaftaran telah diverifikasi tim panitia.</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-outline-variant">
+                <span class="text-label-md font-bold text-secondary flex items-center justify-center gap-1 py-3">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                    Lengkap & Terverifikasi
+                </span>
+            </div>
+        </div>
+    </div>
+
+    {{-- Dashboard Main Layout --}}
     <div class="grid lg:grid-cols-3 gap-6 lg:gap-10">
-        <!-- Main Grid Left Column (Content) -->
+
+        {{-- Main Column (Left) --}}
         <div class="lg:col-span-2 flex flex-col gap-10">
-            
-            <!-- Ujian Aktif Section -->
+
+            {{-- Alur Seleksi SPMB Section --}}
+            <section>
+                <h3 class="font-headline-md text-headline-md mb-6 flex items-center gap-4 text-primary">
+                    <span class="material-symbols-outlined text-secondary">account_tree</span>
+                    Alur Seleksi SPMB {{ date('Y') }}
+                </h3>
+
+                <div class="grid md:grid-cols-4 gap-4">
+                    <div class="p-4 bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm">
+                        <span class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container font-bold text-sm flex items-center justify-center mb-3">1</span>
+                        <h5 class="font-label-md text-label-md font-bold mb-1">Registrasi</h5>
+                        <p class="text-[11px] text-on-surface-variant">Mengisi form data diri calon siswa.</p>
+                    </div>
+
+                    <div class="p-4 bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm">
+                        <span class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container font-bold text-sm flex items-center justify-center mb-3">2</span>
+                        <h5 class="font-label-md text-label-md font-bold mb-1">Pembayaran</h5>
+                        <p class="text-[11px] text-on-surface-variant">Membayar biaya administrasi seleksi.</p>
+                    </div>
+
+                    <div class="p-4 bg-primary/10 border border-primary/40 rounded-2xl shadow-sm">
+                        <span class="w-8 h-8 rounded-full bg-primary text-on-primary font-bold text-sm flex items-center justify-center mb-3">3</span>
+                        <h5 class="font-label-md text-label-md font-bold text-primary mb-1">Ujian CBT</h5>
+                        <p class="text-[11px] text-on-surface-variant">Mengerjakan tes potensi akademik online.</p>
+                    </div>
+
+                    <div class="p-4 bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm opacity-75">
+                        <span class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant font-bold text-sm flex items-center justify-center mb-3">4</span>
+                        <h5 class="font-label-md text-label-md font-bold mb-1">Pengumuman</h5>
+                        <p class="text-[11px] text-on-surface-variant">Melihat kelolosan & daftar ulang.</p>
+                    </div>
+                </div>
+            </section>
+
+            {{-- Jadwal Mendatang Summary Section --}}
             <section>
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-headline-md text-headline-md flex items-center gap-4 text-primary">
-                        <span class="material-symbols-outlined text-secondary" data-icon="timer">timer</span>
-                        Ujian Aktif
+                        <span class="material-symbols-outlined text-secondary">calendar_month</span>
+                        Jadwal Ujian Mendatang
                     </h3>
-                    <span class="px-4 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-sm text-label-sm font-bold">
-                        {{ isset($activeSubjects) ? $activeSubjects->count() : 0 }} Ujian Berlangsung
-                    </span>
+                    <a href="{{ route('exam.active') }}" class="font-label-sm text-label-sm text-primary font-bold hover:underline">
+                        Lihat Semua Jadwal →
+                    </a>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-6">
-                    @forelse($activeSubjects ?? [] as $subj)
-                    <div class="glass-card exam-card-hover border border-outline-variant p-6 rounded-2xl flex flex-col h-full border-t-4 border-t-primary bg-white">
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="p-2 bg-primary/10 text-primary rounded-lg font-bold text-sm">
-                                {{ $subj->code }}
-                            </div>
-                            <span class="font-label-sm text-label-sm px-2 py-0.5 bg-primary-fixed/40 text-primary font-bold rounded">
-                                {{ $subj->difficulty }}
-                            </span>
-                        </div>
-                        <h4 class="font-headline-sm text-headline-sm mb-2">{{ $subj->name }}</h4>
-                        <p class="text-on-surface-variant text-label-md mb-6">{{ $subj->topic }}</p>
-
-                        <div class="mt-auto space-y-4">
-                            <div class="flex items-center gap-6 text-on-surface-variant text-label-md">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
-                                    <span>60 Menit</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm" data-icon="description">description</span>
-                                    <span>{{ $subj->questions_count ?? $subj->items_count }} Soal</span>
-                                </div>
-                            </div>
-                            <a href="{{ route('exam.cbt', $subj) }}" class="w-full inline-block text-center bg-primary text-on-primary py-4 rounded-xl font-headline-sm text-headline-sm transition-all hover:bg-primary-container">
-                                Mulai Ujian
-                            </a>
-                        </div>
-                    </div>
-                    @empty
-                    <div class="col-span-2 p-6 bg-surface-container-lowest border border-outline-variant rounded-2xl text-center">
-                        <p class="text-on-surface-variant font-body-md text-body-md">Belum ada ujian aktif saat ini.</p>
-                    </div>
-                    @endforelse
-                </div>
-            </section>
-            
-            <!-- Jadwal Mendatang Section -->
-            <section>
-                <h3 class="font-headline-md text-headline-md mb-6 flex items-center gap-4 text-primary">
-                    <span class="material-symbols-outlined text-secondary" data-icon="calendar_month">calendar_month</span>
-                    Jadwal Ujian Mendatang
-                </h3>
-                
-                <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl overflow-hidden">
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl overflow-hidden shadow-sm">
                     <table class="w-full text-left border-collapse">
                         <thead class="bg-surface-container-low">
                             <tr>
                                 <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Mata Ujian</th>
                                 <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider hidden sm:table-cell">Tanggal</th>
-                                <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider hidden md:table-cell">Waktu</th>
+                                <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider hidden md:table-cell">Ruangan</th>
                                 <th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Sesi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-surface-container">
+                            @forelse($upcomingExams ?? [] as $exam)
                             <tr class="hover:bg-surface-container transition-colors">
                                 <td class="px-6 py-6 font-label-md text-label-md font-bold">
-                                    Wawancara Akademik
-                                    <div class="sm:hidden text-xs text-on-surface-variant font-normal mt-1">24 Okt 2024 • 09:00</div>
+                                    {{ $exam->name }}
                                 </td>
-                                <td class="px-6 py-6 text-on-surface-variant hidden sm:table-cell">24 Okt 2024</td>
-                                <td class="px-6 py-6 text-on-surface-variant hidden md:table-cell">09:00 - 10:30</td>
+                                <td class="px-6 py-6 text-on-surface-variant hidden sm:table-cell">
+                                    {{ \Carbon\Carbon::parse($exam->date)->format('d M Y') }}
+                                </td>
+                                <td class="px-6 py-6 text-on-surface-variant hidden md:table-cell">
+                                    {{ $exam->room }}
+                                </td>
                                 <td class="px-6 py-6">
-                                    <span class="px-4 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs">Sesi 1</span>
+                                    <span class="px-4 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold">
+                                        {{ $exam->session }}
+                                    </span>
                                 </td>
                             </tr>
-                            <tr class="hover:bg-surface-container transition-colors">
-                                <td class="px-6 py-6 font-label-md text-label-md font-bold">
-                                    Tes Minat Bakat
-                                    <div class="sm:hidden text-xs text-on-surface-variant font-normal mt-1">25 Okt 2024 • 13:00</div>
-                                </td>
-                                <td class="px-6 py-6 text-on-surface-variant hidden sm:table-cell">25 Okt 2024</td>
-                                <td class="px-6 py-6 text-on-surface-variant hidden md:table-cell">13:00 - 15:00</td>
-                                <td class="px-6 py-6">
-                                    <span class="px-4 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs">Sesi 2</span>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-6 text-center text-on-surface-variant font-body-md text-body-md">
+                                    Belum ada jadwal ujian mendatang.
                                 </td>
                             </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
             </section>
-            
-            <!-- Hasil & Riwayat Section -->
-            <section>
-                <h3 class="font-headline-md text-headline-md mb-6 flex items-center gap-4 text-primary">
-                    <span class="material-symbols-outlined text-secondary" data-icon="assignment_turned_in">assignment_turned_in</span>
-                    Hasil & Riwayat Ujian
-                </h3>
-                
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="p-6 rounded-2xl border border-outline-variant bg-surface-container-lowest flex items-center gap-6">
-                        <div class="w-12 h-12 flex-shrink-0 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center">
-                            <span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
-                        </div>
-                        <div>
-                            <h5 class="font-label-md text-label-md font-bold">Ujian Dasar Matematika</h5>
-                            <p class="text-label-sm text-secondary font-bold">Selesai - Lulus</p>
-                            <p class="text-xs text-outline mt-1">Diselesaikan pada 20 Okt 2024</p>
-                        </div>
-                    </div>
-                    
-                    <div class="p-6 rounded-2xl border border-outline-variant bg-surface-container-lowest flex items-center gap-6 opacity-75">
-                        <div class="w-12 h-12 flex-shrink-0 bg-surface-container-high text-on-surface-variant rounded-full flex items-center justify-center">
-                            <span class="material-symbols-outlined" data-icon="pending">pending</span>
-                        </div>
-                        <div>
-                            <h5 class="font-label-md text-label-md font-bold">Tes Karakter Pribadi</h5>
-                            <p class="text-label-sm text-on-surface-variant">Selesai - Menunggu Hasil</p>
-                            <p class="text-xs text-outline mt-1">Diselesaikan pada 21 Okt 2024</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
+
         </div>
-        
-        <!-- Right Column (Sidebar/Info) -->
+
+        {{-- Sidebar Column (Right) --}}
         <div class="flex flex-col gap-10">
-            
-            <!-- Technical Instruction Card -->
-            <div class="bg-surface-container-high border border-outline-variant p-6 rounded-3xl">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="p-2 bg-tertiary-container text-on-tertiary-container rounded-lg">
-                        <span class="material-symbols-outlined" data-icon="info">info</span>
-                    </div>
-                    <h4 class="font-headline-sm text-headline-sm">Instruksi Teknis</h4>
-                </div>
-                
-                <ul class="space-y-4 mb-8">
-                    <li class="flex gap-4">
-                        <span class="material-symbols-outlined text-primary flex-shrink-0" data-icon="browser_updated">browser_updated</span>
-                        <p class="text-label-md">Gunakan browser <strong>Google Chrome</strong> versi terbaru.</p>
-                    </li>
-                    <li class="flex gap-4">
-                        <span class="material-symbols-outlined text-primary flex-shrink-0" data-icon="wifi">wifi</span>
-                        <p class="text-label-md">Pastikan koneksi internet stabil (minimal 5 Mbps).</p>
-                    </li>
-                    <li class="flex gap-4">
-                        <span class="material-symbols-outlined text-primary flex-shrink-0" data-icon="videocam">videocam</span>
-                        <p class="text-label-md">Webcam harus selalu aktif selama ujian berlangsung.</p>
-                    </li>
-                    <li class="flex gap-4">
-                        <span class="material-symbols-outlined text-primary flex-shrink-0" data-icon="no_accounts">no_accounts</span>
-                        <p class="text-label-md">Dilarang membuka tab lain atau meninggalkan layar ujian.</p>
-                    </li>
-                </ul>
-                
-                <button class="w-full flex items-center justify-center gap-4 py-4 border border-primary text-primary rounded-xl font-label-md text-label-md hover:bg-primary/5 transition-colors bg-white">
-                    <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
-                    Panduan Lengkap PDF
-                </button>
-            </div>
-            
-            <!-- Statistics Bento Card -->
+
+            {{-- Statistics Bento Card --}}
             <div class="bg-secondary p-6 rounded-3xl text-on-secondary shadow-lg">
-                <p class="font-label-sm text-label-sm opacity-80 mb-1">Status Kelolosan</p>
-                <h4 class="font-headline-md text-headline-md mb-6">Proses Penilaian</h4>
-                
+                <p class="font-label-sm text-label-sm opacity-80 mb-1">Status Pendaftaran</p>
+                <h4 class="font-headline-md text-headline-md mb-6">Tahap Ujian Seleksi</h4>
+
                 <div class="relative h-32 flex items-center justify-center">
-                    <!-- Circular Progress Simulation -->
                     <svg class="w-24 h-24 transform -rotate-90">
                         <circle class="opacity-20" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
                         <circle cx="48" cy="48" fill="transparent" r="40" stroke="#BBDC12" stroke-dasharray="251.2" stroke-dashoffset="62.8" stroke-width="8" stroke-linecap="round"></circle>
@@ -225,24 +221,22 @@
                 </div>
                 <p class="text-center text-label-sm mt-6 opacity-90 italic">"Selangkah lagi menuju Hitech School!"</p>
             </div>
-            
-            <!-- Support Card -->
-            <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-3xl">
-                <div class="w-full h-32 bg-cover bg-center rounded-2xl mb-6" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAHabsK4IENgG8TOjsxPIZAvjMIQKDmPVa4I5xiM9YIwVVrdEVC0ga1_Yg5uQnDIy1IStGBMaIdwjz8nVo0mDpT4QHNPmUfZaxFv-1rrYCz4i0k53sIWGeUuPXG6dcPadB0FSs5e3wtrhcDSwiVu20N2linmQQxX7bXNXQ9poJ5uPdOO1P8clUw5avBzJ4M6kdr4DtIH08xMxBMIGtU8qg8BOVFuJVLmE7x1qJ_cBv4Og1L3-HTSonq')"></div>
-                <h4 class="font-label-md text-label-md font-bold mb-2">Kendala Teknis?</h4>
-                <p class="text-on-surface-variant text-label-md mb-6">Pengawas kami siap membantu Anda 24/7 selama masa ujian berlangsung.</p>
-                
+
+            {{-- Support Card --}}
+            <div class="bg-surface-container-lowest border border-outline-variant p-6 rounded-3xl shadow-sm">
+                <h4 class="font-label-md text-label-md font-bold mb-2">Bantuan Pendaftaran</h4>
+                <p class="text-on-surface-variant text-label-md mb-6">Tim panitia SPMB siap membantu Anda jika mengalami kendala pendaftaran.</p>
+
                 <a href="https://wa.me/62882019679350" target="_blank" class="w-full flex justify-center bg-[#BBDC12] text-primary py-4 rounded-xl font-bold transition-transform hover:scale-[1.02] active:scale-95 text-center">
-                    Hubungi Pengawas Sekarang
+                    Hubungi Panitia SPMB
                 </a>
             </div>
-            
+
         </div>
     </div>
 
     @push('scripts')
     <script>
-        // Simple Greeting Time-based Logic
         document.addEventListener('DOMContentLoaded', function() {
             const hour = new Date().getHours();
             const welcomeText = document.querySelector('h1.font-display-lg');
@@ -252,7 +246,7 @@
                 else if(hour >= 11 && hour < 15) greeting = "Selamat Siang";
                 else if(hour >= 15 && hour < 19) greeting = "Selamat Sore";
                 else greeting = "Selamat Malam";
-                
+
                 welcomeText.innerHTML = welcomeText.innerHTML.replace('Selamat Datang', greeting);
             }
         });
