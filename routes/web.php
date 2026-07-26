@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BillingExportController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PaymentController;
@@ -18,6 +19,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Student billing page — accessible even before payment (PaymentRequired middleware excludes this route)
     Route::get('/billing', Billing::class)->name('billing');
+    Route::get('/billing/export/pdf', [BillingExportController::class, 'downloadPdf'])->name('billing.export.pdf');
+    Route::get('/billing/export/excel', [BillingExportController::class, 'downloadExcel'])->name('billing.export.excel');
 
     // Admin routes
     Route::middleware(['can:access.admin_portal'])->prefix('admin')->name('admin.')->group(function () {

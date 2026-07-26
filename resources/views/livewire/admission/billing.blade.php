@@ -69,6 +69,24 @@
                         </span>
                         @endif
                     </div>
+
+                    {{-- Export Buttons --}}
+                    <div class="flex items-center gap-3 mt-5 pt-4 border-t border-outline-variant">
+                        <span class="font-label-sm text-label-sm text-on-surface-variant">Unduh tagihan:</span>
+                        <a href="{{ route('billing.export.pdf') }}"
+                           target="_blank"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant bg-surface-container text-on-surface font-label-sm text-label-sm font-medium hover:bg-error-container hover:text-on-error-container hover:border-error transition-all duration-150 active:scale-95"
+                        >
+                            <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+                            PDF
+                        </a>
+                        <a href="{{ route('billing.export.excel') }}"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-outline-variant bg-surface-container text-on-surface font-label-sm text-label-sm font-medium hover:bg-secondary-container hover:text-on-secondary-container hover:border-secondary transition-all duration-150 active:scale-95"
+                        >
+                            <span class="material-symbols-outlined text-[16px]">table_view</span>
+                            Excel
+                        </a>
+                    </div>
                 </div>
 
                 {{-- Invoice Dates --}}

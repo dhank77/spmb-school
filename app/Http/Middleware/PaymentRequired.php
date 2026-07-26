@@ -25,6 +25,7 @@ class PaymentRequired
             // so we must check for the X-Livewire header.
             if (
                 $request->routeIs('billing') ||
+                $request->routeIs('billing.export.*') ||
                 $request->routeIs('logout') ||
                 $request->routeIs('payment.callback') ||
                 $request->routeIs('payment.return') ||
