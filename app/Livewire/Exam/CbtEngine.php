@@ -11,8 +11,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('components.layouts.student-portal')]
-#[Title('CBT Exam Engine - Portal Calon Murid')]
+#[Layout('components.layouts.exam-fullscreen')]
+#[Title('CBT Exam Engine - Strict Mode')]
 class CbtEngine extends Component
 {
     public ?CbtSubject $subject = null;

@@ -11,6 +11,10 @@ use App\Livewire\Admin\RolePermissionSettings;
 use App\Livewire\Admission\Billing;
 use App\Livewire\Exam\ActiveExams;
 use App\Livewire\Exam\CbtEngine;
+use App\Models\CbtExamResult;
+use App\Models\CbtSubject;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('home');
@@ -30,6 +34,34 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // CBT Exam Portal & Engine
     Route::get('/exam/active', ActiveExams::class)->name('exam.active');
     Route::get('/exam/cbt/{subject?}', CbtEngine::class)->name('exam.cbt');
+    Route::post('/exam/cbt/auto-finish', function (Request $request) {
+        $userId = Auth::id();
+        $subjectId = $request->input('subject_id');
+
+        if ($userId && $subjectId) {
+            $subject = CbtSubject::find($subjectId);
+            if ($subject) {
+                $questions = $subject->questions;
+                $totalPoints = $questions->sum('points');
+                CbtExamResult::firstOrCreate(
+                    [
+                        'user_id' => $userId,
+                        'cbt_subject_id' => $subjectId,
+                    ],
+                    [
+                        'score' => 0,
+                        'total_points' => $totalPoints,
+                        'correct_count' => 0,
+                        'total_questions' => $questions->count(),
+                        'status' => 'completed',
+                        'completed_at' => now(),
+                    ]
+                );
+            }
+        }
+
+        return response()->json(['status' => 'success']);
+    })->name('exam.cbt.auto-finish');
 
     // Admin routes
     Route::middleware(['can:access.admin_portal'])->prefix('admin')->name('admin.')->group(function () {
