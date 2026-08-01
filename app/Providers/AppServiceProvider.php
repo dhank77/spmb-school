@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Prism\Prism\PrismManager;
+use Prism\Prism\Providers\OpenAI\OpenAI as OpenAIProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,22 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configurePrism();
+    }
+
+    /**
+     * Register SumoPod as an OpenAI-compatible Prism provider.
+     */
+    protected function configurePrism(): void
+    {
+        $this->app->make(PrismManager::class)->extend('sumopod', function ($app, array $config): OpenAIProvider {
+            return new OpenAIProvider(
+                apiKey: $config['api_key'] ?? '',
+                url: $config['url'] ?? 'https://ai.sumopod.com/v1',
+                organization: null,
+                project: null,
+            );
+        });
     }
 
     /**

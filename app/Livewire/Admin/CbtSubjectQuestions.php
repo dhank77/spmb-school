@@ -8,6 +8,8 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Prism\Prism\Facades\Prism;
+use Throwable;
 
 #[Layout('components.layouts.admin-portal')]
 class CbtSubjectQuestions extends Component
@@ -49,6 +51,24 @@ class CbtSubjectQuestions extends Component
         'C' => 'Opsi C',
         'D' => 'Opsi D',
     ];
+
+    // -------------------------------------------------------------------------
+    // AI Question Generation modal
+    // -------------------------------------------------------------------------
+
+    public bool $showAiModal = false;
+
+    public bool $isGeneratingAi = false;
+
+    public int $aiQuestionCount = 5;
+
+    public string $aiTopic = '';
+
+    public int $aiPoints = 1;
+
+    public string $aiCustomInstruction = '';
+
+    public ?string $aiErrorMessage = null;
 
     // -------------------------------------------------------------------------
     // Question CRUD actions
@@ -149,6 +169,132 @@ class CbtSubjectQuestions extends Component
         $this->points = 1;
         $this->resetValidation();
     }
+
+    // -------------------------------------------------------------------------
+    // AI Question Generation actions
+    // -------------------------------------------------------------------------
+
+    /**
+     * Open the AI question generation modal with pre-filled topic from subject.
+     */
+    public function openAiModal(): void
+    {
+        $this->aiTopic = $this->subject->topic ?? $this->subject->name;
+        $this->aiQuestionCount = 5;
+        $this->aiPoints = 1;
+        $this->aiCustomInstruction = '';
+        $this->aiErrorMessage = null;
+        $this->isGeneratingAi = false;
+        $this->showAiModal = true;
+    }
+
+    /**
+     * Close the AI modal and reset its state.
+     */
+    public function closeAiModal(): void
+    {
+        $this->showAiModal = false;
+        $this->aiErrorMessage = null;
+        $this->isGeneratingAi = false;
+    }
+
+    /**
+     * Generate questions using SumoPod AI via Prism PHP structured output.
+     */
+    public function generateAiQuestions(): void
+    {
+        $this->validate([
+            'aiQuestionCount' => 'required|integer|min:1|max:20',
+            'aiTopic' => 'required|string|max:500',
+            'aiPoints' => 'required|integer|min:1|max:100',
+            'aiCustomInstruction' => 'nullable|string|max:1000',
+        ]);
+
+        $this->aiErrorMessage = null;
+        $this->isGeneratingAi = true;
+
+        try {
+            // Remove PHP execution time limit for this long-running AI request.
+            set_time_limit(0);
+
+            $subjectName = $this->subject->name;
+            $difficulty = $this->subject->difficulty ?? 'sedang';
+            $topic = $this->aiTopic;
+            $count = $this->aiQuestionCount;
+
+            $systemPrompt = <<<'SYSTEM'
+            Kamu adalah generator soal ujian profesional berbahasa Indonesia. Tugas kamu adalah membuat soal pilihan ganda (multiple choice) berkualitas tinggi.
+            PENTING: Seluruh soal, pilihan jawaban, dan semua teks WAJIB ditulis dalam Bahasa Indonesia yang baik dan benar.
+            Kamu WAJIB merespons HANYA dengan JSON array yang valid, tanpa teks tambahan, tanpa markdown, tanpa komentar.
+            Format JSON:
+            [{"question_text":"...","option_a":"...","option_b":"...","option_c":"...","option_d":"...","correct_answer":"A"}]
+            correct_answer hanya boleh berisi: A, B, C, atau D.
+            SYSTEM;
+
+            $userPrompt = "Buatkan tepat {$count} soal pilihan ganda dalam Bahasa Indonesia untuk mata pelajaran \"{$subjectName}\" dengan topik \"{$topic}\".";
+            $userPrompt .= " Tingkat kesulitan: {$difficulty}.";
+            $userPrompt .= ' Setiap soal harus memiliki 4 pilihan jawaban yang berbeda dan hanya satu jawaban yang benar.';
+            $userPrompt .= ' Buat pilihan jawaban yang bervariasi dan tidak terlalu mudah ditebak.';
+            $userPrompt .= ' Semua teks HARUS dalam Bahasa Indonesia.';
+
+            if ($this->aiCustomInstruction !== '') {
+                $userPrompt .= " Instruksi tambahan: {$this->aiCustomInstruction}.";
+            }
+
+            $userPrompt .= " Balas HANYA dengan JSON array berisi tepat {$count} soal. Jangan tambahkan teks lain.";
+
+            $response = Prism::text()
+                ->using('sumopod', env('SUMOPOD_MODEL', 'MiniMax-M2.7-highspeed'))
+                ->withSystemPrompt($systemPrompt)
+                ->withPrompt($userPrompt)
+                ->withClientOptions(['timeout' => 120, 'connect_timeout' => 15])
+                ->generate();
+
+            // Strip markdown code fences if the model wrapped the JSON
+            $rawText = trim($response->text);
+            $rawText = (string) preg_replace('/^```(?:json)?\s*/i', '', $rawText);
+            $rawText = (string) preg_replace('/\s*```$/', '', $rawText);
+
+            $items = json_decode($rawText, true);
+
+            if (! is_array($items) || $items === []) {
+                $this->aiErrorMessage = 'AI tidak mengembalikan soal yang valid. Coba lagi atau kurangi jumlah soal.';
+
+                return;
+            }
+
+            foreach ($items as $item) {
+                $correctAnswer = strtoupper(trim($item['correct_answer'] ?? 'A'));
+
+                if (! in_array($correctAnswer, ['A', 'B', 'C', 'D'])) {
+                    $correctAnswer = 'A';
+                }
+
+                CbtQuestion::create([
+                    'cbt_subject_id' => $this->subject->id,
+                    'question_text' => $item['question_text'] ?? '',
+                    'option_a' => $item['option_a'] ?? '',
+                    'option_b' => $item['option_b'] ?? '',
+                    'option_c' => $item['option_c'] ?? '',
+                    'option_d' => $item['option_d'] ?? '',
+                    'correct_answer' => $correctAnswer,
+                    'points' => $this->aiPoints,
+                ]);
+            }
+
+            $this->syncItemsCount();
+            $this->closeAiModal();
+            $this->dispatch('questions-ai-generated', count: count($items));
+        } catch (Throwable $e) {
+            $this->aiErrorMessage = 'Terjadi kesalahan saat membuat soal: '.$e->getMessage();
+        } finally {
+            $this->isGeneratingAi = false;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
 
     /**
      * Keep items_count on the subject in sync with the actual question count.

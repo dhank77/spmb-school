@@ -69,5 +69,9 @@ return [
             'url' => env('Z_URL', 'https://api.z.ai/api/paas/v4'),
             'api_key' => env('Z_API_KEY', ''),
         ],
+        'sumopod' => [
+            'url' => env('SUMOPOD_URL', 'https://ai.sumopod.com/v1'),
+            'api_key' => env('SUMOPOD_API_KEY', ''),
+        ],
     ],
 ];
