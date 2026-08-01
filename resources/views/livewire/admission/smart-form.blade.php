@@ -148,6 +148,19 @@
                                 </select>
                             </div>
                             
+                            <!-- WhatsApp Number -->
+                            <div class="md:col-span-2">
+                                <label class="block font-label-md text-label-md text-on-surface-variant mb-2" for="whatsapp_number">Nomor WhatsApp Aktif</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-label-md">+62</span>
+                                    <input wire:model="whatsapp_number" class="w-full pl-14 pr-4 py-3 border @error('whatsapp_number') border-red-500 @else border-slate-200 @enderror rounded-lg focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-300" id="whatsapp_number" placeholder="8xxxxxxxxxx" type="tel" />
+                                </div>
+                                <p class="mt-1.5 text-xs text-on-surface-variant">Tagihan pembayaran akan dikirim ke nomor ini via WhatsApp.</p>
+                                @error('whatsapp_number')
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Contact Info -->
                             <div class="md:col-span-2 mt-4 pt-4 border-t border-slate-100">
                                 <h3 class="font-headline-sm text-headline-sm text-on-surface mb-4">Keamanan Akun</h3>

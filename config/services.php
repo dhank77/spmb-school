@@ -41,4 +41,9 @@ return [
         'sandbox' => env('DUITKU_MODE', 'sandbox') === 'sandbox',
     ],
 
+    'fonnte' => [
+        'api_key' => env('FONNTE_API_KEY'),
+        'base_url' => env('FONNTE_BASEURL', 'https://api.fonnte.com/send'),
+    ],
+
 ];

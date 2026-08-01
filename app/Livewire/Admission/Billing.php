@@ -64,7 +64,10 @@ class Billing extends Component
             $this->baseFee = $activeWave->registration_cost;
         }
 
-        $this->uniqueCode = rand(4000, 4999);
+        // Derive unique code from the last 3 digits of the registrant's WhatsApp number
+        $waNumber = $user?->whatsapp_number ?? '';
+        $digits = preg_replace('/\D/', '', $waNumber);
+        $this->uniqueCode = ((int) substr($digits, -3)) + 4000;
     }
 
     public function selectMethod(string $method): void
