@@ -15,19 +15,23 @@
     $isRejected = $status === 'ditolak';
 @endphp
 
-<div class="kanban-card bg-surface-container-lowest border-t-4 {{ $borderColor }} rounded-xl p-sm shadow-sm border border-outline-variant/50 cursor-grab active:cursor-grabbing {{ $isRejected ? 'opacity-80 grayscale-[0.3]' : '' }}"
+<div class="kanban-card bg-surface-container-lowest border-t-4 {{ $borderColor }} rounded-xl p-sm shadow-sm border border-outline-variant/50 cursor-grab active:cursor-grabbing {{ $isRejected ? 'opacity-80 grayscale-[0.3]' : '' }} group relative"
      wire:key="card-{{ $user->id }}"
-     wire:sortable.item="{{ $user->id }}">
+     wire:sortable.item="{{ $user->id }}"
+     x-data
+     @click="$wire.viewStudent({{ $user->id }})">
 
     <div class="flex items-center gap-sm mb-sm">
         <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-label-md flex-shrink-0">
             {{ $user->initials() }}
         </div>
-        <div class="min-w-0">
+        <div class="min-w-0 flex-1">
             <p class="font-label-md text-label-md font-bold text-on-surface truncate">{{ $user->name }}</p>
             <p class="font-label-sm text-label-sm text-on-surface-variant">{{ $user->registration_number ?? 'No Reg #' }}</p>
         </div>
+        <span class="material-symbols-outlined text-[18px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity duration-200">open_in_new</span>
     </div>
+
 
     @if ($status === 'tersimpan')
         {{-- Document progress indicator --}}
